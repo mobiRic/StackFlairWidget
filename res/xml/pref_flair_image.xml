@@ -1,0 +1,12 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <!-- USED TO SHOW THE SAMPLE FLAIR IMAGE TO THE USER IN THE PREFERENCES -->
+
+
+    <!-- FLAIR IMAGE -->
+    <com.mobiric.stackflairwidget.preference.ImageViewPreference
+        android:key="flair"
+        android:title=""
+        android:widgetLayout="@layout/custom_pref_flair" />
+
+</PreferenceScreen>

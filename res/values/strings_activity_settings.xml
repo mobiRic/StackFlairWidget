@@ -1,0 +1,58 @@
+<resources>
+
+    <!-- Strings related to Settings -->
+
+    <string name="pref_header_general">General</string>
+    <string name="pref_header_flair">Flair</string>
+
+    
+    <!-- USER ID -->
+    <string name="pref_title_user">User ID</string>
+    <string name="pref_default_user">383414</string>
+
+    <!-- ACCOUNT / SITE LIST DROP-DOWN -->
+    <string name="pref_title_account">Account / Site</string>
+
+    <string-array name="pref_account_list_titles">
+        <item>Stack Overflow</item>
+        <item>Stack Exchange</item>
+    </string-array>
+    <string-array name="pref_account_list_values">
+        <item>stackoverflow.com</item>
+        <item>stackexchange.com</item>
+    </string-array>
+
+    <!-- THEME FOR FLAIR -->
+    <string name="pref_title_theme">Theme</string>
+
+    <string-array name="pref_theme_list_titles">
+        <item>Default</item>
+        <item>Clean</item>
+        <item>Dark</item>
+        <item>Hot Dog Stand</item>
+    </string-array>
+    <string-array name="pref_theme_list_values">
+        <item></item>
+        <item>clean</item>
+        <item>dark</item>
+        <item>hotdog</item>
+    </string-array>
+
+    <!-- DATA & SYNC -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+
+    <string-array name="pref_sync_frequency_titles">
+        <item>6 hour</item>
+        <item>12 hours</item>
+        <item>24 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>360</item>
+        <item>720</item>
+        <item>1440</item>
+        <item>-1</item>
+    </string-array>
+
+</resources>
