@@ -11,29 +11,41 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.Messenger;
 import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 import com.mobiric.debug.Dbug;
+import com.mobiric.lib.ipc.StaticSafeHandler;
 import com.mobiric.stackflairwidget.R;
 import com.mobiric.stackflairwidget.activity.SettingsActivity;
 import com.mobiric.stackflairwidget.constant.FlairSettings;
 import com.mobiric.stackflairwidget.constant.IntentAction;
-import com.mobiric.stackflairwidget.constant.IntentExtra;
 import com.mobiric.stackflairwidget.constant.WSConstants;
 import com.mobiric.stackflairwidget.utils.FlairUtils;
 import com.mobiric.stackflairwidget.widget.FlairWidgetProvider;
 
 /**
- * Service that provides background processing in order to update the info on
- * the widget.
+ * Service that provides background processing in order to update the info on the widget.
  */
-public class FlairWidgetService extends Service
+public class FlairWidgetService extends Service implements Handler.Callback
 {
+	/**
+	 * Handler for the result to come back to this service. The {@link WebService} and this
+	 * {@link StaticSafeHandler} both need to know the exact parameters passed back in the
+	 * {@link Message} .
+	 */
+	private static Handler webserviceHandler;
+
 	String ipAddress;
 	boolean wifiConnected = false;
 	Thread widgetUpdateThread;
+
+	@Override
+	public void onCreate()
+	{
+		super.onCreate();
+		webserviceHandler = new StaticSafeHandler(this);
+	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
@@ -51,8 +63,7 @@ public class FlairWidgetService extends Service
 	}
 
 	/**
-	 * @deprecated Binding not allowed from a widget - use the Command Pattern
-	 *             instead.
+	 * @deprecated Binding not allowed from a widget - use the Command Pattern instead.
 	 */
 	@Override
 	public IBinder onBind(Intent arg0)
@@ -60,11 +71,59 @@ public class FlairWidgetService extends Service
 		return null;
 	}
 
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	/**
+	 * Callback method from the {@link StaticSafeHandler}, that handles the {@link Message} sent
+	 * from the {@link WebService}. </p>
+	 * 
+	 * Needs to know which parameters are passed back in which predefined fields of the
+	 * {@link Message}. </p>
+	 * <ul>
+	 * <li><code>what</code> - hash of the related {@link IntentAction.WebService} constant</li>
+	 * <li><code>arg1</code> - one of the constants declared in {@link WSConstants.Result}</li>
+	 * <li><code>obj</code> - the returned {@link Bitmap}</li>
+	 * </ul>
+	 * 
+	 * @param msg
+	 *            {@link Message} sent from the {@link WebService}
+	 * @return <code>true</code> always
+	 */
+	@Override
+	public boolean handleMessage(Message message)
+	{
+		// get info from message
+		int actionHash = message.what;
+
+		/* IMAGE_DOWNLOAD */
+		if (IntentAction.WebService.IMAGE_DOWNLOAD.hashCode() == actionHash)
+		{
+			if (message.arg1 == WSConstants.Result.OK)
+			{
+				// download success - update image
+				Dbug.log("WebService IMAGE_DOWLOAD -> SUCCESS");
+				Bitmap bmpFlair = (Bitmap) message.obj;
+
+				updateWidget(bmpFlair);
+			}
+			else
+			{
+				// download error
+				Dbug.log("WebService IMAGE_DOWLOAD -> ERROR");
+			}
+		}
+
+		return true;
+	}
+
+
+	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	private class WidgetUpdateThread extends Thread
 	{
 		Context context;
 		/** @deprecated unused - probably delete later. */
+		@SuppressWarnings("unused")
 		Intent intent;
 
 		WidgetUpdateThread(Context context, Intent intent)
@@ -77,44 +136,27 @@ public class FlairWidgetService extends Service
 		public void run()
 		{
 			// retrieve preferences
-			SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(getApplicationContext());
-			String user = prefs.getString(FlairSettings.Key.USER, "383414");
-			String account = prefs.getString(FlairSettings.Key.ACCOUNT, "stackoverflow.com");
-			String theme = prefs.getString(FlairSettings.Key.THEME, "");
+			SharedPreferences prefs =
+					PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+			String user =
+					prefs.getString(FlairSettings.Key.USER, context.getString(R.string.defaultUser));
+			String account =
+					prefs.getString(FlairSettings.Key.ACCOUNT,
+							context.getString(R.string.defaultAccount));
+			String theme =
+					prefs.getString(FlairSettings.Key.THEME,
+							context.getString(R.string.defaultTheme));
 
 			// TODO get saved image & set it before starting download
 
-			startImageDownload(FlairUtils.getFlairDownloadUrl(account, user, theme));
+			FlairUtils.startImageDownload(FlairUtils.getFlairDownloadUrl(account, user, theme),
+					webserviceHandler, context);
 		}
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/**
-	 * Commands the {@link CommunicatorService} to download an image.
-	 * 
-	 * @param url
-	 *        URL of the image to download
-	 */
-	private void startImageDownload(String url)
-	{
-		// create Intent to send the LOGIN command
-		Intent intent = new Intent(this, WebService.class);
-		intent.setAction(IntentAction.WebService.IMAGE_DOWNLOAD);
-
-		// create new Messenger for the communication back
-		Messenger messenger = new Messenger(communicatorServiceHandler);
-		intent.putExtra(IntentExtra.Key.IPC_MESSENGER, messenger);
-
-		// set url
-		intent.putExtra(IntentExtra.Key.WS_IMAGE_URL, url);
-
-		// start the service for this request
-		startService(intent);
-	}
-
-	private void updateWidget(Bitmap flair)
+	public void updateWidget(Bitmap flair)
 	{
 		try
 		{
@@ -124,8 +166,9 @@ public class FlairWidgetService extends Service
 
 			// open Settings on click
 			Intent wifiIpSettings = new Intent(this, SettingsActivity.class);
-			PendingIntent pendingIntentIp = PendingIntent.getActivity(this, 0, wifiIpSettings,
-				PendingIntent.FLAG_UPDATE_CURRENT);
+			PendingIntent pendingIntentIp =
+					PendingIntent.getActivity(this, 0, wifiIpSettings,
+							PendingIntent.FLAG_UPDATE_CURRENT);
 			widgetUi.setOnClickPendingIntent(R.id.ivFlair, pendingIntentIp);
 
 			/* UPDATE THE WIDGET INSTANCE */
@@ -150,62 +193,5 @@ public class FlairWidgetService extends Service
 			FlairWidgetService.this.stopSelf();
 		}
 	}
-
-
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * Handler for the result to come back to this service. The
-	 * {@link CommunicatorService} and this {@link FlairWidgetService} both need
-	 * to know the exact parameters passed back in the {@link Message} .
-	 */
-	// TODO make this Handler static to prevent memory leaks
-	private Handler communicatorServiceHandler = new Handler()
-	{
-		/**
-		 * Needs to know which parameters are passed back in which predefined
-		 * fields of the {@link Message}. </p>
-		 * <ul>
-		 * <li><code>what</code> - hash of the related
-		 * {@link IntentAction.WebService} constant</li>
-		 * <li><code>arg1</code> - one of the constants declared in
-		 * {@link WSConstants.Result}</li>
-		 * <li><code>obj</code> - the returned {@link Bitmap}</li>
-		 * </ul>
-		 */
-		public void handleMessage(Message message)
-		{
-			// null check
-			if (message == null)
-			{
-				return;
-			}
-
-			// get info from message
-			int actionHash = message.what;
-
-			/* IMAGE_DOWNLOAD */
-			if (IntentAction.WebService.IMAGE_DOWNLOAD.hashCode() == actionHash)
-			{
-				if (message.arg1 == WSConstants.Result.OK)
-				{
-					// download success - update image
-					Dbug.log("WebService IMAGE_DOWLOAD -> SUCCESS");
-					Bitmap bmpFlair = (Bitmap) message.obj;
-					updateWidget(bmpFlair);
-				}
-				else
-				{
-					// download error
-					Dbug.log("WebService IMAGE_DOWLOAD -> ERROR");
-				}
-			}
-
-		}
-	};
-
-
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 }

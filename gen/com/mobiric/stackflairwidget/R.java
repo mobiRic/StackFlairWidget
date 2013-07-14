@@ -41,36 +41,40 @@ public final class R {
     }
     public static final class string {
         public static final int app_name=0x7f060000;
-        public static final int pref_default_user=0x7f060005;
+        public static final int defaultAccount=0x7f060002;
+        public static final int defaultTheme=0x7f060003;
+        public static final int defaultUser=0x7f060001;
+        public static final int pref_default_user=0x7f060007;
         /**  DATA & SYNC 
          */
-        public static final int pref_header_data_sync=0x7f060008;
-        public static final int pref_header_flair=0x7f060003;
+        public static final int pref_header_data_sync=0x7f06000a;
+        public static final int pref_header_flair=0x7f060005;
         /**  Strings related to Settings 
          */
-        public static final int pref_header_general=0x7f060002;
+        public static final int pref_header_general=0x7f060004;
         /**  ACCOUNT / SITE LIST DROP-DOWN 
          */
-        public static final int pref_title_account=0x7f060006;
-        public static final int pref_title_sync_frequency=0x7f060009;
+        public static final int pref_title_account=0x7f060008;
+        public static final int pref_title_sync_frequency=0x7f06000b;
         /**  THEME FOR FLAIR 
          */
-        public static final int pref_title_theme=0x7f060007;
+        public static final int pref_title_theme=0x7f060009;
         /**  USER ID 
          */
-        public static final int pref_title_user=0x7f060004;
-        public static final int wifi_status_not_connected=0x7f060001;
+        public static final int pref_title_user=0x7f060006;
     }
     public static final class style {
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
+
     
 
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
+
 
         
 
@@ -92,6 +96,9 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
+        /**  Individual Widget Settings theme. 
+         */
+        public static final int DialogTheme=0x7f080002;
     }
     public static final class xml {
         public static final int pref_data_sync=0x7f040000;

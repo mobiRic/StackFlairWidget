@@ -1,7 +1,8 @@
 <resources>
 
     <string name="app_name">StackFlair</string>
-
-    <string name="wifi_status_not_connected">no wifi connection</string>
+    <string name="defaultUser">383414</string>
+    <string name="defaultAccount">stackoverflow.com</string>
+    <string name="defaultTheme"></string>
 
 </resources>

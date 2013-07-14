@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Messenger;
 import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -14,9 +13,9 @@ import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
 
 import com.mobiric.debug.Dbug;
+import com.mobiric.lib.ipc.StaticSafeHandler;
 import com.mobiric.stackflairwidget.R;
 import com.mobiric.stackflairwidget.constant.IntentAction;
-import com.mobiric.stackflairwidget.constant.IntentExtra;
 import com.mobiric.stackflairwidget.constant.WSConstants;
 import com.mobiric.stackflairwidget.preference.ImageViewPreference;
 import com.mobiric.stackflairwidget.service.FlairWidgetService;
@@ -24,18 +23,24 @@ import com.mobiric.stackflairwidget.service.WebService;
 import com.mobiric.stackflairwidget.utils.FlairUtils;
 
 /**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
+ * A {@link PreferenceActivity} that presents a set of application settings. On handset devices,
+ * settings are presented as a single list. On tablets, settings are split by category, with
+ * category headers shown to the left of the list of settings.
  * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
+ * See <a href="http://developer.android.com/design/patterns/settings.html"> Android Design:
+ * Settings</a> for design guidelines and the <a
+ * href="http://developer.android.com/guide/topics/ui/settings.html">Settings API Guide</a> for more
+ * information on developing a Settings UI.
  */
-public class SettingsActivity extends PreferenceActivity
+public class SettingsActivity extends PreferenceActivity implements Handler.Callback
 {
+	/**
+	 * Handler for the result to come back to this service. The {@link WebService} and this
+	 * {@link StaticSafeHandler} both need to know the exact parameters passed back in the
+	 * {@link Message} .
+	 */
+	private static Handler webserviceHandler;
+
 	private EditTextPreference prefUser;
 	private ListPreference prefAccount;
 	private ListPreference prefTheme;
@@ -46,13 +51,13 @@ public class SettingsActivity extends PreferenceActivity
 	{
 		super.onPostCreate(savedInstanceState);
 
+		webserviceHandler = new StaticSafeHandler(this);
 		setupSimplePreferencesScreen();
 	}
 
 	/**
-	 * Shows the simplified settings UI if the device configuration if the
-	 * device configuration dictates that a simplified, single-pane UI should be
-	 * shown.
+	 * Shows the simplified settings UI if the device configuration if the device configuration
+	 * dictates that a simplified, single-pane UI should be shown.
 	 */
 	@SuppressWarnings("deprecation")
 	private void setupSimplePreferencesScreen()
@@ -73,11 +78,11 @@ public class SettingsActivity extends PreferenceActivity
 		addPreferencesFromResource(R.xml.pref_flair_image);
 		prefFlairImage = (ImageViewPreference) findPreference("flair");
 
-		//		// Add 'data and sync' preferences, and a corresponding header.
-		//		fakeHeader = new PreferenceCategory(this);
-		//		fakeHeader.setTitle(R.string.pref_header_data_sync);
-		//		getPreferenceScreen().addPreference(fakeHeader);
-		//		addPreferencesFromResource(R.xml.pref_data_sync);
+		// // Add 'data and sync' preferences, and a corresponding header.
+		// fakeHeader = new PreferenceCategory(this);
+		// fakeHeader.setTitle(R.string.pref_header_data_sync);
+		// getPreferenceScreen().addPreference(fakeHeader);
+		// addPreferencesFromResource(R.xml.pref_data_sync);
 
 		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
 		// their values. When their values change, their summaries are updated
@@ -85,76 +90,81 @@ public class SettingsActivity extends PreferenceActivity
 		bindPreferenceSummaryToValue(findPreference("user"));
 		bindPreferenceSummaryToValue(findPreference("account"));
 		bindPreferenceSummaryToValue(findPreference("theme"));
-		//		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+		// bindPreferenceSummaryToValue(findPreference("sync_frequency"));
 	}
 
 	/**
-	 * A preference value change listener that updates the preference's summary
-	 * to reflect its new value.
+	 * A preference value change listener that updates the preference's summary to reflect its new
+	 * value.
 	 */
-	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener()
-	{
-		@Override
-		public boolean onPreferenceChange(Preference preference, Object value)
-		{
-			String stringValue = value.toString();
-
-			// update preference summaries
-			if (preference instanceof ListPreference)
+	private Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener =
+			new Preference.OnPreferenceChangeListener()
 			{
-				// For list preferences, look up the correct display value in
-				// the preference's 'entries' list.
-				ListPreference listPreference = (ListPreference) preference;
-				int index = listPreference.findIndexOfValue(stringValue);
-
-				// Set the summary to reflect the new value.
-				preference.setSummary(index >= 0 ? listPreference.getEntries()[index] : null);
-
-			}
-			else
-			{
-				// For all other preferences, set the summary to the value's
-				// simple string representation.
-				preference.setSummary(stringValue);
-			}
-
-			// get new image
-			if ((prefUser != null) && (prefAccount != null) && (prefTheme != null)
-				&& (prefUser.getSummary() != null) && (prefAccount.getSummary() != null)
-				&& (prefTheme.getSummary() != null))
-			{
-				if ((prefUser == preference) || (prefAccount == preference)
-					|| (prefTheme == preference))
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object value)
 				{
-					// get old values
-					String user = prefUser.getText();
-					String website = prefAccount.getValue();
-					String theme = prefTheme.getValue();
+					String stringValue = value.toString();
 
-					// get new value
-					if (prefUser == preference)
+					// update preference summaries
+					if (preference instanceof ListPreference)
 					{
-						user = stringValue;
+						// For list preferences, look up the correct display value in
+						// the preference's 'entries' list.
+						ListPreference listPreference = (ListPreference) preference;
+						int index = listPreference.findIndexOfValue(stringValue);
+
+						// Set the summary to reflect the new value.
+						preference.setSummary(index >= 0 ? listPreference.getEntries()[index]
+								: null);
+
 					}
-					if (prefAccount == preference)
+					else
 					{
-						website = stringValue;
-					}
-					if (prefTheme == preference)
-					{
-						theme = stringValue;
+						// For all other preferences, set the summary to the value's
+						// simple string representation.
+						preference.setSummary(stringValue);
 					}
 
-					startImageDownload(FlairUtils.getFlairDownloadUrl(website, user, theme));
+					// get new image
+					if ((prefUser != null) && (prefAccount != null) && (prefTheme != null)
+							&& (prefUser.getSummary() != null)
+							&& (prefAccount.getSummary() != null)
+							&& (prefTheme.getSummary() != null))
+					{
+						if ((prefUser == preference) || (prefAccount == preference)
+								|| (prefTheme == preference))
+						{
+							// get old values
+							String user = prefUser.getText();
+							String website = prefAccount.getValue();
+							String theme = prefTheme.getValue();
+
+							// get new value
+							if (prefUser == preference)
+							{
+								user = stringValue;
+							}
+							if (prefAccount == preference)
+							{
+								website = stringValue;
+							}
+							if (prefTheme == preference)
+							{
+								theme = stringValue;
+							}
+
+							FlairUtils.startImageDownload(
+									FlairUtils.getFlairDownloadUrl(website, user, theme),
+									webserviceHandler, SettingsActivity.this);
+						}
+					}
+
+					// update widget
+					updateWidget();
+
+					return true;
 				}
-			}
-
-			// update widget
-			updateWidget();
-
-			return true;
-		}
-	};
+			};
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -166,40 +176,12 @@ public class SettingsActivity extends PreferenceActivity
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	/**
-	 * Commands the {@link CommunicatorService} to download an image.
-	 * 
-	 * @param url
-	 *        URL of the image to download
-	 */
-	// TODO move startImageDownload into FlairUtils class - it is duplicated in FlairWidgetService
-	private void startImageDownload(String url)
-	{
-		Dbug.log("Flair: " + url);
-
-
-		// create Intent to send the LOGIN command
-		Intent intent = new Intent(this, WebService.class);
-		intent.setAction(IntentAction.WebService.IMAGE_DOWNLOAD);
-
-		// create new Messenger for the communication back
-		Messenger messenger = new Messenger(communicatorServiceHandler);
-		intent.putExtra(IntentExtra.Key.IPC_MESSENGER, messenger);
-
-		// set url
-		intent.putExtra(IntentExtra.Key.WS_IMAGE_URL, url);
-
-		// start the service for this request
-		startService(intent);
-	}
-
 
 	/**
-	 * Binds a preference's summary to its value. More specifically, when the
-	 * preference's value is changed, its summary (line of text below the
-	 * preference title) is updated to reflect the value. The summary is also
-	 * immediately updated upon calling this method. The exact display format is
-	 * dependent on the type of preference.
+	 * Binds a preference's summary to its value. More specifically, when the preference's value is
+	 * changed, its summary (line of text below the preference title) is updated to reflect the
+	 * value. The summary is also immediately updated upon calling this method. The exact display
+	 * format is dependent on the type of preference.
 	 * 
 	 * @see #sBindPreferenceSummaryToValueListener
 	 */
@@ -210,64 +192,49 @@ public class SettingsActivity extends PreferenceActivity
 
 		// Trigger the listener immediately with the preference's
 		// current value.
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, PreferenceManager
-			.getDefaultSharedPreferences(preference.getContext())
-			.getString(preference.getKey(), ""));
+		sBindPreferenceSummaryToValueListener.onPreferenceChange(
+				preference,
+				PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(
+						preference.getKey(), ""));
 	}
 
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	/**
-	 * Handler for the result to come back to this service. The
-	 * {@link CommunicatorService} and this {@link SettingsActivity} both need
-	 * to
-	 * know the exact parameters passed back in the {@link Message} .
+	 * Needs to know which parameters are passed back in which predefined fields of the
+	 * {@link Message}. </p>
+	 * <ul>
+	 * <li><code>what</code> - hash of the related {@link IntentAction.WebService} constant</li>
+	 * <li><code>arg1</code> - one of the constants declared in {@link WSConstants.Result}</li>
+	 * <li><code>arg2</code> - 1 if Server was available, 0 if not available</li>
+	 * </ul>
 	 */
-	private Handler communicatorServiceHandler = new Handler()
+	@Override
+	public boolean handleMessage(Message message)
 	{
-		/**
-		 * Needs to know which parameters are passed back in which predefined
-		 * fields of the {@link Message}. </p>
-		 * <ul>
-		 * <li><code>what</code> - hash of the related
-		 * {@link IntentAction.WebService} constant</li>
-		 * <li><code>arg1</code> - one of the constants declared in
-		 * {@link WSConstants.Result}</li>
-		 * <li><code>arg2</code> - 1 if Server was available, 0 if not available
-		 * </li>
-		 * </ul>
-		 */
-		public void handleMessage(Message message)
+		// get info from message
+		int actionHash = message.what;
+
+		/* IMAGE_DOWNLOAD */
+		if (IntentAction.WebService.IMAGE_DOWNLOAD.hashCode() == actionHash)
 		{
-			// null check
-			if (message == null)
+			if (message.arg1 == WSConstants.Result.OK)
 			{
-				return;
+				// download success - update image
+				Dbug.log("WebService IMAGE_DOWLOAD -> SUCCESS");
+				Bitmap bmpFlair = (Bitmap) message.obj;
+				prefFlairImage.setBitmap(bmpFlair);
 			}
-
-			// get info from message
-			int actionHash = message.what;
-
-			/* IMAGE_DOWNLOAD */
-			if (IntentAction.WebService.IMAGE_DOWNLOAD.hashCode() == actionHash)
+			else
 			{
-				if (message.arg1 == WSConstants.Result.OK)
-				{
-					// download success - update image
-					Dbug.log("WebService IMAGE_DOWLOAD -> SUCCESS");
-					Bitmap bmpFlair = (Bitmap) message.obj;
-					prefFlairImage.setBitmap(bmpFlair);
-				}
-				else
-				{
-					// download error
-					Dbug.log("WebService IMAGE_DOWLOAD -> ERROR");
-				}
+				// download error
+				Dbug.log("WebService IMAGE_DOWLOAD -> ERROR");
 			}
-
 		}
-	};
+
+		return true;
+	}
 
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
