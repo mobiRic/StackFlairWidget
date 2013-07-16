@@ -3,7 +3,6 @@ package com.mobiric.stackflairwidget.service;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,9 +19,9 @@ import com.mobiric.stackflairwidget.R;
 import com.mobiric.stackflairwidget.activity.SettingsActivity;
 import com.mobiric.stackflairwidget.constant.FlairSettings;
 import com.mobiric.stackflairwidget.constant.IntentAction;
+import com.mobiric.stackflairwidget.constant.IntentExtra;
 import com.mobiric.stackflairwidget.constant.WSConstants;
 import com.mobiric.stackflairwidget.utils.FlairUtils;
-import com.mobiric.stackflairwidget.widget.FlairWidgetProvider;
 
 /**
  * Service that provides background processing in order to update the info on the widget.
@@ -44,16 +43,17 @@ public class FlairWidgetService extends Service implements Handler.Callback
 	public void onCreate()
 	{
 		super.onCreate();
-		webserviceHandler = new StaticSafeHandler(this);
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
-		widgetUpdateThread = new WidgetUpdateThread(this, intent);
+		webserviceHandler = new StaticSafeHandler(this);
+
+		widgetUpdateThread = new WidgetUpdateThread(getApplicationContext(), intent);
 		widgetUpdateThread.start();
 
-		return START_REDELIVER_INTENT;
+		return START_NOT_STICKY;
 	}
 
 	@Override
@@ -82,6 +82,7 @@ public class FlairWidgetService extends Service implements Handler.Callback
 	 * <ul>
 	 * <li><code>what</code> - hash of the related {@link IntentAction.WebService} constant</li>
 	 * <li><code>arg1</code> - one of the constants declared in {@link WSConstants.Result}</li>
+	 * <li><code>arg2</code> - widget ID</li>
 	 * <li><code>obj</code> - the returned {@link Bitmap}</li>
 	 * </ul>
 	 * 
@@ -101,10 +102,10 @@ public class FlairWidgetService extends Service implements Handler.Callback
 			if (message.arg1 == WSConstants.Result.OK)
 			{
 				// download success - update image
-				Dbug.log("WebService IMAGE_DOWLOAD -> SUCCESS");
-				Bitmap bmpFlair = (Bitmap) message.obj;
-
-				updateWidget(bmpFlair);
+				if (message.arg2 != IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
+				{
+					updateWidget(message.arg2, (Bitmap) message.obj);
+				}
 			}
 			else
 			{
@@ -122,8 +123,7 @@ public class FlairWidgetService extends Service implements Handler.Callback
 	private class WidgetUpdateThread extends Thread
 	{
 		Context context;
-		/** @deprecated unused - probably delete later. */
-		@SuppressWarnings("unused")
+		/** Contains info about the widget to be updated. */
 		Intent intent;
 
 		WidgetUpdateThread(Context context, Intent intent)
@@ -135,9 +135,18 @@ public class FlairWidgetService extends Service implements Handler.Callback
 		@Override
 		public void run()
 		{
+			// which widget
+			int appWidgetId =
+					intent.getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
+							IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
+			if (appWidgetId == IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
+			{
+				return;
+			}
+
 			// retrieve preferences
 			SharedPreferences prefs =
-					PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+					context.getSharedPreferences(String.valueOf(appWidgetId), Context.MODE_PRIVATE);
 			String user =
 					prefs.getString(FlairSettings.Key.USER, context.getString(R.string.defaultUser));
 			String account =
@@ -150,13 +159,13 @@ public class FlairWidgetService extends Service implements Handler.Callback
 			// TODO get saved image & set it before starting download
 
 			FlairUtils.startImageDownload(FlairUtils.getFlairDownloadUrl(account, user, theme),
-					webserviceHandler, context);
+					appWidgetId, webserviceHandler, context);
 		}
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	public void updateWidget(Bitmap flair)
+	public void updateWidget(int appWidgetId, Bitmap flair)
 	{
 		try
 		{
@@ -165,18 +174,18 @@ public class FlairWidgetService extends Service implements Handler.Callback
 			widgetUi.setImageViewBitmap(R.id.ivFlair, flair);
 
 			// open Settings on click
-			Intent wifiIpSettings = new Intent(this, SettingsActivity.class);
+			Intent flairSettings = new Intent(this, SettingsActivity.class);
+			flairSettings.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
 			PendingIntent pendingIntentIp =
-					PendingIntent.getActivity(this, 0, wifiIpSettings,
+					PendingIntent.getActivity(this, appWidgetId, flairSettings,
 							PendingIntent.FLAG_UPDATE_CURRENT);
 			widgetUi.setOnClickPendingIntent(R.id.ivFlair, pendingIntentIp);
 
 			/* UPDATE THE WIDGET INSTANCE */
 			try
 			{
-				ComponentName widgetComponent = new ComponentName(this, FlairWidgetProvider.class);
 				AppWidgetManager widgetManager = AppWidgetManager.getInstance(this);
-				widgetManager.updateAppWidget(widgetComponent, widgetUi);
+				widgetManager.updateAppWidget(appWidgetId, widgetUi);
 			}
 			catch (Exception e)
 			{

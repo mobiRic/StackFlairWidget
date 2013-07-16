@@ -41,8 +41,7 @@ public class WebService extends IntentService
 		{
 			PowerManager mgr = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 
-			lockStatic =
-					mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WebService_WakeLock");
+			lockStatic = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "WebService_WakeLock");
 			lockStatic.setReferenceCounted(true);
 		}
 
@@ -158,6 +157,9 @@ public class WebService extends IntentService
 	 *            results.</li>
 	 *            <li>
 	 *            {@link IntentExtra.Key#WS_IMAGE_URL} - URL of the image.</li>
+	 *            <li>
+	 *            {@link IntentExtra.Key#APP_WIDGET_ID} - ID of widget that will be updated with the
+	 *            image.</li>
 	 *            </ul>
 	 */
 	void handleImageDownload(Intent intent)
@@ -170,11 +172,7 @@ public class WebService extends IntentService
 		try
 		{
 			String getUrl = getImageDownloadUrl(intent);
-			Dbug.log(getUrl);
-
 			HttpGet get = new HttpGet(getUrl);
-
-			Dbug.log(get.getRequestLine().toString());
 
 			// call service
 			HttpResponse response = client.execute(get);
@@ -207,8 +205,6 @@ public class WebService extends IntentService
 				{
 					Dbug.log("DOWNLOAD RESPONSE EMPTY");
 				}
-
-
 			}
 			else
 			{
@@ -226,6 +222,8 @@ public class WebService extends IntentService
 		{
 			Dbug.log("DOWNLOAD FAILURE!");
 			e.printStackTrace();
+
+			serverAvailable = false;
 		}
 		finally
 		{
@@ -243,6 +241,9 @@ public class WebService extends IntentService
 		// use hash of the action to identify this message
 		msg.what = intent.getAction().hashCode();
 		msg.arg1 = result;
+		msg.arg2 =
+				intent.getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
+						IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
 		msg.obj = flair;
 
 		try
@@ -255,16 +256,9 @@ public class WebService extends IntentService
 		}
 		catch (android.os.RemoteException e)
 		{
-			Dbug.log("WEBSERVICE TO RESPOND TO CALLING ACTIVITY - " + e);
+			Dbug.log("WEBSERVICE FAILED TO RESPOND TO CALLING ACTIVITY - " + e);
 			e.printStackTrace();
 		}
 	}
-
-
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 }

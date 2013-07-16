@@ -1,55 +1,102 @@
 package com.mobiric.stackflairwidget.widget;
 
-import com.mobiric.stackflairwidget.service.FlairWidgetService;
+import java.io.File;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+
+import com.mobiric.stackflairwidget.constant.IntentExtra;
+import com.mobiric.stackflairwidget.service.FlairWidgetService;
 
 /**
- * A very basic {@link AppWidgetProvider} implementation that delegates
- * the actual processing to the {@link WifiWidgetService}.
+ * A very basic {@link AppWidgetProvider} implementation that delegates the actual processing to the
+ * {@link WifiWidgetService}.
  */
 public class FlairWidgetProvider extends AppWidgetProvider
 {
 
+	/**
+	 * Calls the {@link FlairWidgetService} to update the given widget.
+	 */
 	@Override
-	public void onUpdate(Context context, AppWidgetManager appWidgetManager,
-		int[] appWidgetIds)
+	public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds)
 	{
-		/*
-		 * AppWidgetProvider extends BroadcastReceiver, so we must not spend
-		 * lots of processing time in this class. Actual processing is done in
-		 * a Service so that this method can return as quickly as possible.
-		 */
-		context.startService(getIntentForService(context));
+		for (int i : appWidgetIds)
+		{
+			/*
+			 * AppWidgetProvider extends BroadcastReceiver, so we must not spend lots of processing
+			 * time in this class. Actual processing is done in a Service so that this method can
+			 * return as quickly as possible.
+			 */
+			context.startService(getIntentForService(context, i));
+		}
 	}
 
 	/**
-	 * Stops the background service when the widget is removed.
+	 * Deletes the {@link SharedPreferences} file for the deleted widget.
 	 */
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds)
 	{
-		context.stopService(getIntentForService(context));
+		for (int i : appWidgetIds)
+		{
+			// delete the SharedPreferences for this deleted widget
+			SharedPreferences prefs =
+					context.getSharedPreferences(String.valueOf(i), Context.MODE_PRIVATE);
+			prefs.edit().clear().commit();
+			File prefsFile =
+					new File(context.getApplicationContext().getFilesDir().getParent()
+							+ "/shared_prefs/" + i + ".xml");
+			prefsFile.delete();
+		}
 
 		super.onDeleted(context, appWidgetIds);
 	}
 
 	/**
-	 * Helper method to create the correct {@link Intent} to use when working
-	 * with the {@link FlairWidgetService}.
+	 * Stops the background service when the last widget is removed.
+	 */
+	@Override
+	public void onDisabled(Context context)
+	{
+		context.stopService(getIntentForService(context));
+
+		super.onDisabled(context);
+	}
+
+	/**
+	 * Helper method to create the correct {@link Intent} to use when working with the
+	 * {@link FlairWidgetService}.
 	 * 
 	 * @param context
-	 *        Context to use for the Intent
-	 * @return Intent that can be used to interact with the
-	 *         {@link FlairWidgetService}
+	 *            Context to use for the Intent
+	 * @return Intent that can be used to interact with the {@link FlairWidgetService}
 	 */
-	private Intent getIntentForService(Context context)
+	private static Intent getIntentForService(Context context)
 	{
-		Intent widgetService = new Intent(context.getApplicationContext(),
-			FlairWidgetService.class);
+		Intent widgetService =
+				new Intent(context.getApplicationContext(), FlairWidgetService.class);
+		return widgetService;
+	}
+
+	/**
+	 * Helper method to create the correct {@link Intent} to use when working with the
+	 * {@link FlairWidgetService}.
+	 * 
+	 * @param context
+	 *            Context to use for the Intent
+	 * @param appWidgetId
+	 *            ID to send to the {@link FlairWidgetService}
+	 * @return Intent that can be used to interact with the {@link FlairWidgetService}
+	 */
+	private static Intent getIntentForService(Context context, int appWidgetId)
+	{
+		Intent widgetService =
+				new Intent(context.getApplicationContext(), FlairWidgetService.class);
+		widgetService.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
 		return widgetService;
 	}
 

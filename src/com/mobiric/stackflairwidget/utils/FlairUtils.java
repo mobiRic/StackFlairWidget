@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Messenger;
 
-import com.mobiric.debug.Dbug;
 import com.mobiric.stackflairwidget.constant.IntentAction;
 import com.mobiric.stackflairwidget.constant.IntentExtra;
 import com.mobiric.stackflairwidget.service.WebService;
@@ -25,20 +24,21 @@ public class FlairUtils
 	}
 
 	/**
-	 * Commands the {@link WebService} to download an image.
+	 * Commands the {@link WebService} to download an image for a given widget.
 	 * 
 	 * @param url
 	 *            URL of the image to download
+	 * @param appWidgetId
+	 *            ID of the widget that this image applies to. This needs to be passed into the
+	 *            {@link WebService} so that it can round-trip back to the update handler method.
 	 * @param webserviceHandler
 	 *            {@link Handler} to be used by the webservice
 	 * @param context
 	 *            {@link Context} to call the webservice from
 	 */
-	public static void startImageDownload(String url, Handler webserviceHandler, Context context)
+	public static void startImageDownload(String url, int appWidgetId, Handler webserviceHandler,
+			Context context)
 	{
-		Dbug.log("Flair: " + url);
-
-
 		// create Intent to send the LOGIN command
 		Intent intent = new Intent(context, WebService.class);
 		intent.setAction(IntentAction.WebService.IMAGE_DOWNLOAD);
@@ -49,6 +49,9 @@ public class FlairUtils
 
 		// set url
 		intent.putExtra(IntentExtra.Key.WS_IMAGE_URL, url);
+
+		// set widget id
+		intent.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
 
 		// start the service for this request
 		context.startService(intent);

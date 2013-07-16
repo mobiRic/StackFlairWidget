@@ -1,3 +1,4 @@
+// TODO This whole activity needs to be redone as a nice custom view
 package com.mobiric.stackflairwidget.activity;
 
 import android.content.Intent;
@@ -16,6 +17,7 @@ import com.mobiric.debug.Dbug;
 import com.mobiric.lib.ipc.StaticSafeHandler;
 import com.mobiric.stackflairwidget.R;
 import com.mobiric.stackflairwidget.constant.IntentAction;
+import com.mobiric.stackflairwidget.constant.IntentExtra;
 import com.mobiric.stackflairwidget.constant.WSConstants;
 import com.mobiric.stackflairwidget.preference.ImageViewPreference;
 import com.mobiric.stackflairwidget.service.FlairWidgetService;
@@ -31,6 +33,8 @@ import com.mobiric.stackflairwidget.utils.FlairUtils;
  * Settings</a> for design guidelines and the <a
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings API Guide</a> for more
  * information on developing a Settings UI.
+ * 
+ * @deprecated Create a much nicer version of this screen!
  */
 public class SettingsActivity extends PreferenceActivity implements Handler.Callback
 {
@@ -46,12 +50,33 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 	private ListPreference prefTheme;
 	private ImageViewPreference prefFlairImage;
 
+	private int appWidgetId;
+
+	@SuppressWarnings("deprecation")
+	@Override
+	protected void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+
+		webserviceHandler = new StaticSafeHandler(this);
+		appWidgetId =
+				getIntent().getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
+						IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
+
+		// hack the default shared preferences file to use the one for this widget
+		PreferenceManager prefMgr = getPreferenceManager();
+		prefMgr.setSharedPreferencesName(String.valueOf(appWidgetId));
+		prefMgr.setSharedPreferencesMode(MODE_PRIVATE);
+	}
+
+	/**
+	 * Used to hack the built in screen layout with the image.
+	 */
 	@Override
 	protected void onPostCreate(Bundle savedInstanceState)
 	{
 		super.onPostCreate(savedInstanceState);
 
-		webserviceHandler = new StaticSafeHandler(this);
 		setupSimplePreferencesScreen();
 	}
 
@@ -155,12 +180,12 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 
 							FlairUtils.startImageDownload(
 									FlairUtils.getFlairDownloadUrl(website, user, theme),
-									webserviceHandler, SettingsActivity.this);
+									appWidgetId, webserviceHandler, SettingsActivity.this);
 						}
 					}
 
 					// update widget
-					updateWidget();
+					updateWidget(appWidgetId);
 
 					return true;
 				}
@@ -168,9 +193,10 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private void updateWidget()
+	private void updateWidget(int appWidgetId)
 	{
 		Intent serviceIntent = new Intent(this, FlairWidgetService.class);
+		serviceIntent.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
 		startService(serviceIntent);
 	}
 
@@ -194,7 +220,7 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		// current value.
 		sBindPreferenceSummaryToValueListener.onPreferenceChange(
 				preference,
-				PreferenceManager.getDefaultSharedPreferences(preference.getContext()).getString(
+				getPreferenceManager().getSharedPreferences().getString(
 						preference.getKey(), ""));
 	}
 
@@ -222,7 +248,6 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 			if (message.arg1 == WSConstants.Result.OK)
 			{
 				// download success - update image
-				Dbug.log("WebService IMAGE_DOWLOAD -> SUCCESS");
 				Bitmap bmpFlair = (Bitmap) message.obj;
 				prefFlairImage.setBitmap(bmpFlair);
 			}
