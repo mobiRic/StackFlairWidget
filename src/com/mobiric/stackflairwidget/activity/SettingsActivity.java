@@ -178,14 +178,12 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 								theme = stringValue;
 							}
 
+							// TODO abstract image download to be triggered by an Intent
 							FlairUtils.startImageDownload(
 									FlairUtils.getFlairDownloadUrl(website, user, theme),
 									appWidgetId, webserviceHandler, SettingsActivity.this);
 						}
 					}
-
-					// update widget
-					updateWidget(appWidgetId);
 
 					return true;
 				}
@@ -193,10 +191,14 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-	private void updateWidget(int appWidgetId)
+	private void updateWidget(int appWidgetId, Bitmap bmpFlair)
 	{
 		Intent serviceIntent = new Intent(this, FlairWidgetService.class);
 		serviceIntent.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
+		if (bmpFlair != null)
+		{
+			serviceIntent.putExtra(IntentExtra.Key.FLAIR_IMAGE, bmpFlair);
+		}
 		startService(serviceIntent);
 	}
 
@@ -218,10 +220,8 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 
 		// Trigger the listener immediately with the preference's
 		// current value.
-		sBindPreferenceSummaryToValueListener.onPreferenceChange(
-				preference,
-				getPreferenceManager().getSharedPreferences().getString(
-						preference.getKey(), ""));
+		sBindPreferenceSummaryToValueListener.onPreferenceChange(preference, getPreferenceManager()
+				.getSharedPreferences().getString(preference.getKey(), ""));
 	}
 
 
@@ -250,6 +250,10 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 				// download success - update image
 				Bitmap bmpFlair = (Bitmap) message.obj;
 				prefFlairImage.setBitmap(bmpFlair);
+
+				// TODO abstract widget update to be triggered by an Intent
+				// update widget
+				updateWidget(appWidgetId, bmpFlair);
 			}
 			else
 			{

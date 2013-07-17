@@ -10,7 +10,6 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 import com.mobiric.debug.Dbug;
@@ -48,10 +47,39 @@ public class FlairWidgetService extends Service implements Handler.Callback
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId)
 	{
-		webserviceHandler = new StaticSafeHandler(this);
+		// get widget ID
+		int appWidgetId =
+				intent.getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
+						IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
 
-		widgetUpdateThread = new WidgetUpdateThread(getApplicationContext(), intent);
-		widgetUpdateThread.start();
+		if (appWidgetId != IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
+		{
+			// get widget image
+			// TODO rather pass image as a file per http://stackoverflow.com/a/4352194/383414
+			Bitmap bmpFlair = intent.getParcelableExtra(IntentExtra.Key.FLAIR_IMAGE);
+
+			if (bmpFlair != null)
+			{
+				Dbug.log("BITMAP PROVIDED");
+
+				// update widget with provided image
+				widgetUpdateThread =
+						new WidgetUpdateThread(getApplicationContext(), appWidgetId, bmpFlair);
+				widgetUpdateThread.start();
+			}
+			else
+			{
+				Dbug.log("BITMAP NULL");
+
+				// initialise the widget with a click event
+				updateWidget(appWidgetId, null);
+
+				webserviceHandler = new StaticSafeHandler(this);
+
+				widgetUpdateThread = new WidgetUpdateThread(getApplicationContext(), appWidgetId);
+				widgetUpdateThread.start();
+			}
+		}
 
 		return START_NOT_STICKY;
 	}
@@ -123,28 +151,59 @@ public class FlairWidgetService extends Service implements Handler.Callback
 	private class WidgetUpdateThread extends Thread
 	{
 		Context context;
-		/** Contains info about the widget to be updated. */
-		Intent intent;
+		/** ID of the widget to be updated. */
+		int appWidgetId;
+		/** Bitmap to update the widget. */
+		Bitmap bmpFlair;
 
-		WidgetUpdateThread(Context context, Intent intent)
+		/**
+		 * Create a thread to update a given widget ID, based on preferences stored for that widget.
+		 * 
+		 * @param context
+		 *            Required to retrieve {@link SharedPreferences}
+		 * @param appWidgetId
+		 *            ID of widget to update
+		 */
+		WidgetUpdateThread(Context context, int appWidgetId)
+		{
+			this(context, appWidgetId, null);
+		}
+
+		/**
+		 * Create a thread to update a given widget ID with a specific image.
+		 * 
+		 * @param context
+		 *            Required to retrieve {@link SharedPreferences}
+		 * @param appWidgetId
+		 *            ID of widget to update
+		 * @param bmpFlair
+		 *            Bitmap to use to update widget; if <code>null</code> thread will attempt to
+		 *            download an image based on widget preferences
+		 */
+		WidgetUpdateThread(Context context, int appWidgetId, Bitmap bmpFlair)
 		{
 			this.context = context;
-			this.intent = intent;
+			this.appWidgetId = appWidgetId;
+			this.bmpFlair = bmpFlair;
 		}
 
 		@Override
 		public void run()
 		{
-			// which widget
-			int appWidgetId =
-					intent.getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
-							IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
+			// check for ID
 			if (appWidgetId == IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
 			{
 				return;
 			}
 
-			// retrieve preferences
+			// check for bitmap
+			if (bmpFlair != null)
+			{
+				updateWidget(appWidgetId, bmpFlair);
+				return;
+			}
+
+			// download bitmap based on preferences
 			SharedPreferences prefs =
 					context.getSharedPreferences(String.valueOf(appWidgetId), Context.MODE_PRIVATE);
 			String user =
@@ -171,7 +230,10 @@ public class FlairWidgetService extends Service implements Handler.Callback
 		{
 			// set remote views
 			RemoteViews widgetUi = new RemoteViews(getPackageName(), R.layout.widget);
-			widgetUi.setImageViewBitmap(R.id.ivFlair, flair);
+			if (flair != null)
+			{
+				widgetUi.setImageViewBitmap(R.id.ivFlair, flair);
+			}
 
 			// open Settings on click
 			Intent flairSettings = new Intent(this, SettingsActivity.class);

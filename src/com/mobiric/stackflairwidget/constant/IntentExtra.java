@@ -24,6 +24,10 @@ public class IntentExtra
 		 */
 		public static final String APP_WIDGET_ID = "APP_WIDGET_ID";
 		/**
+		 * Used to send an image to {@link FlairWidgetService}.
+		 */
+		public static final String FLAIR_IMAGE = "FLAIR_IMAGE";
+		/**
 		 * Used in {@link WebService} for the {@link Messenger} object that communicates back to the
 		 * caller.
 		 */
