@@ -60,8 +60,6 @@ public class FlairWidgetService extends Service implements Handler.Callback
 
 			if (bmpFlair != null)
 			{
-				Dbug.log("BITMAP PROVIDED");
-
 				// update widget with provided image
 				widgetUpdateThread =
 						new WidgetUpdateThread(getApplicationContext(), appWidgetId, bmpFlair);
@@ -69,10 +67,11 @@ public class FlairWidgetService extends Service implements Handler.Callback
 			}
 			else
 			{
-				Dbug.log("BITMAP NULL");
+				// check for cached image
+				Bitmap cachedFlair = FlairUtils.loadCachedImage(this, appWidgetId);
 
-				// initialise the widget with a click event
-				updateWidget(appWidgetId, null);
+				// initialise the widget with a click event and cached image
+				updateWidget(appWidgetId, cachedFlair);
 
 				webserviceHandler = new StaticSafeHandler(this);
 
@@ -132,13 +131,15 @@ public class FlairWidgetService extends Service implements Handler.Callback
 				// download success - update image
 				if (message.arg2 != IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
 				{
-					updateWidget(message.arg2, (Bitmap) message.obj);
+					Bitmap bmpFlair = (Bitmap) message.obj;
+					FlairUtils.saveCachedImage(this, message.arg2, bmpFlair);
+					updateWidget(message.arg2, bmpFlair);
 				}
 			}
 			else
 			{
 				// download error
-				Dbug.log("WebService IMAGE_DOWLOAD -> ERROR");
+				Dbug.log("WebService IMAGE_DOWNLOAD -> ERROR");
 			}
 		}
 
@@ -215,15 +216,24 @@ public class FlairWidgetService extends Service implements Handler.Callback
 					prefs.getString(FlairSettings.Key.THEME,
 							context.getString(R.string.defaultTheme));
 
-			// TODO get saved image & set it before starting download
-
-			FlairUtils.startImageDownload(FlairUtils.getFlairDownloadUrl(account, user, theme),
-					appWidgetId, webserviceHandler, context);
+			// update image
+			String flairDownloadUrl = FlairUtils.getFlairDownloadUrl(account, user, theme);
+			FlairUtils
+					.startImageDownload(flairDownloadUrl, appWidgetId, webserviceHandler, context);
 		}
 	}
 
 	// ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	/**
+	 * Updates a widget with an image.
+	 * 
+	 * @param appWidgetId
+	 *            ID of widget to update
+	 * @param flair
+	 *            image to update; if <code>null</code> then widget will be updated with a click
+	 *            action to open the {@link SettingsActivity}
+	 */
 	public void updateWidget(int appWidgetId, Bitmap flair)
 	{
 		try

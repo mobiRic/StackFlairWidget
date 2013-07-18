@@ -51,6 +51,10 @@ public class FlairWidgetProvider extends AppWidgetProvider
 					new File(context.getApplicationContext().getFilesDir().getParent()
 							+ "/shared_prefs/" + i + ".xml");
 			prefsFile.delete();
+			
+			// delete cached flair image
+			File flairFile = new File(context.getApplicationContext().getFilesDir(), i + ".png");
+			flairFile.delete();
 		}
 
 		super.onDeleted(context, appWidgetIds);

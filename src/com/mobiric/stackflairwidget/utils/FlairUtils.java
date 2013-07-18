@@ -1,10 +1,18 @@
 package com.mobiric.stackflairwidget.utils;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
 import android.os.Messenger;
 
+import com.mobiric.debug.Dbug;
 import com.mobiric.stackflairwidget.constant.IntentAction;
 import com.mobiric.stackflairwidget.constant.IntentExtra;
 import com.mobiric.stackflairwidget.service.WebService;
@@ -57,5 +65,63 @@ public class FlairUtils
 		context.startService(intent);
 	}
 
+	/**
+	 * Saves the image a given widget in the file cache.
+	 * 
+	 * @param context
+	 *            Context to save image file with
+	 * @param appWidgetId
+	 *            ID of the widget
+	 * @param flair
+	 *            image to cache
+	 * @return <code>true</code> if file is written; <code>false</code> if there was an error
+	 */
+	public static boolean saveCachedImage(Context context, int appWidgetId, Bitmap flair)
+	{
+		try
+		{
+			FileOutputStream fos =
+					context.getApplicationContext().openFileOutput(appWidgetId + ".png",
+							Context.MODE_PRIVATE);
+			flair.compress(CompressFormat.PNG, 100, fos);
+			fos.close();
+		}
+		catch (IOException e)
+		{
+			Dbug.log("Error caching bitmap.");
+			e.printStackTrace();
 
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Loads the image a given widget from the file cache.
+	 * 
+	 * @param context
+	 *            Context to save image file with
+	 * @param appWidgetId
+	 *            ID of the widget
+	 * @return image from cache, or <code>null</code> image could not be found or read
+	 */
+	public static Bitmap loadCachedImage(Context context, int appWidgetId)
+	{
+		Bitmap flair = null;
+		try
+		{
+			FileInputStream fis =
+					context.getApplicationContext().openFileInput(appWidgetId + ".png");
+			flair = BitmapFactory.decodeStream(fis);
+			fis.close();
+		}
+		catch (IOException e)
+		{
+			Dbug.log("ERROR reading cached bitmap for widget " + appWidgetId);
+			e.printStackTrace();
+		}
+
+		return flair;
+	}
 }

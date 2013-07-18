@@ -51,6 +51,7 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 	private ImageViewPreference prefFlairImage;
 
 	private int appWidgetId;
+	private volatile boolean initialised = false;
 
 	@SuppressWarnings("deprecation")
 	@Override
@@ -78,6 +79,25 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		super.onPostCreate(savedInstanceState);
 
 		setupSimplePreferencesScreen();
+
+		// retrieve cached image after activity has started
+		final Bitmap cachedFlair = FlairUtils.loadCachedImage(this, appWidgetId);
+		findViewById(android.R.id.content).post(new Runnable()
+		{
+			public void run()
+			{
+				// display cached image
+				if ((cachedFlair != null) && (prefFlairImage != null))
+				{
+					prefFlairImage.setBitmap(cachedFlair);
+				}
+
+				// bind preferences & update image
+				bindPreferenceSummaryToValue(findPreference("user"));
+				bindPreferenceSummaryToValue(findPreference("account"));
+				bindPreferenceSummaryToValue(findPreference("theme"));
+			}
+		});
 	}
 
 	/**
@@ -103,19 +123,8 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		addPreferencesFromResource(R.xml.pref_flair_image);
 		prefFlairImage = (ImageViewPreference) findPreference("flair");
 
-		// // Add 'data and sync' preferences, and a corresponding header.
-		// fakeHeader = new PreferenceCategory(this);
-		// fakeHeader.setTitle(R.string.pref_header_data_sync);
-		// getPreferenceScreen().addPreference(fakeHeader);
-		// addPreferencesFromResource(R.xml.pref_data_sync);
+		initialised = true;
 
-		// Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-		// their values. When their values change, their summaries are updated
-		// to reflect the new value, per the Android Design guidelines.
-		bindPreferenceSummaryToValue(findPreference("user"));
-		bindPreferenceSummaryToValue(findPreference("account"));
-		bindPreferenceSummaryToValue(findPreference("theme"));
-		// bindPreferenceSummaryToValue(findPreference("sync_frequency"));
 	}
 
 	/**
@@ -151,8 +160,8 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 					}
 
 					// get new image
-					if ((prefUser != null) && (prefAccount != null) && (prefTheme != null)
-							&& (prefUser.getSummary() != null)
+					if ((initialised) && (prefUser != null) && (prefAccount != null)
+							&& (prefTheme != null) && (prefUser.getSummary() != null)
 							&& (prefAccount.getSummary() != null)
 							&& (prefTheme.getSummary() != null))
 					{
@@ -253,12 +262,13 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 
 				// TODO abstract widget update to be triggered by an Intent
 				// update widget
+				FlairUtils.saveCachedImage(this, appWidgetId, bmpFlair);
 				updateWidget(appWidgetId, bmpFlair);
 			}
 			else
 			{
 				// download error
-				Dbug.log("WebService IMAGE_DOWLOAD -> ERROR");
+				Dbug.log("WebService IMAGE_DOWNLOAD -> ERROR");
 			}
 		}
 
