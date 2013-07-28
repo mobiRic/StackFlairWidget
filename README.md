@@ -1,9 +1,9 @@
-StackFlair Widget (Android)
----------------------------
+Flair Stack Widget (Android)
+----------------------------
 
 A StackOverflow Flair widget for Android. 
 
-A simple widget that displays the flair image for a StackOverflow account. Clicking the widget will open the user's account in the default browser.
+A simple widget that displays the flair image for a StackExchange account. Clicking the widget will open the user's account in the default browser.
 
 Internal architecture is overly complex for this level of app; StackFlair is a demo for a more complicated app.
 

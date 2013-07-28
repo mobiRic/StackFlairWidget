@@ -1,8 +1,19 @@
 <resources>
 
-    <string name="app_name">StackFlair</string>
+    <string name="app_name">Flair Stack Widget</string>
+
+    <!-- DEFAULT SETTINGS -->
     <string name="defaultUser">383414</string>
     <string name="defaultAccount">stackoverflow.com</string>
     <string name="defaultTheme"></string>
+
+    <!-- SETTINGS ACTIVITY -->
+    <string name="title_settings">Configure Flair</string>
+    <string name="action_about">About</string>
+
+    <!-- ABOUT ACTIVITY -->
+    <string name="title_about">Flair Stack Widget</string>
+    <string name="text_about">Flair Stack is a simple widget demo that will display the Stack Exchange flair(tm) for a given user.\n\nStack multiple flairs to display your favourite Stack Exchange users.</string>
+    <string name="text_developer">Flair Stack Widget developed by:</string>
 
 </resources>

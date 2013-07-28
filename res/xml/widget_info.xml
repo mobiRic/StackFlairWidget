@@ -3,8 +3,10 @@
 <!-- Widget sizing is done in terms of "blocks" on the screen. -->
 <!-- Each block is 74dp square. -->
 
+
 <!-- NOTE 2: -->
 <!-- OLD & WRONG FORMULA used to be: size = (n*74) - 2 -->
+
 
 <!-- NOTE 3: -->
 <!-- NEW FORMULA has been UPDATED: size = (n*70) - 30 -->
@@ -16,6 +18,6 @@
     android:minWidth="180dp"
     android:previewImage="@drawable/flair_383414"
     android:updatePeriodMillis="3600000" />
-<!-- android:configure="com.mobiric.stackflairwidget.activity.SettingsActivity" -->
+<!--     android:configure="com.mobiric.stackflairwidget.activity.SettingsActivity" -->
 <!-- android:initialKeyguardLayout="@layout/widget" -->
 

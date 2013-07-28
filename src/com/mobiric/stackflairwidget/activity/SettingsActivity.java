@@ -12,6 +12,8 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.mobiric.debug.Dbug;
 import com.mobiric.lib.ipc.StaticSafeHandler;
@@ -70,6 +72,19 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		prefMgr.setSharedPreferencesMode(MODE_PRIVATE);
 	}
 
+	// /**
+	// * Any way this activity is placed into background, it will configure the widget.
+	// */
+	// @Override
+	// protected void onPause()
+	// {
+	// setResult(RESULT_OK,
+	// new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
+	// finish();
+	//
+	// super.onPause();
+	// }
+
 	/**
 	 * Used to hack the built in screen layout with the image.
 	 */
@@ -125,6 +140,28 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 
 		initialised = true;
 
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu)
+	{
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		if (R.id.action_about == item.getItemId())
+		{
+			Intent launchAboutActivity = new Intent(getApplicationContext(), AboutActivity.class);
+			startActivity(launchAboutActivity);
+
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	/**

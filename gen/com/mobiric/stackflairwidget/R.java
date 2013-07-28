@@ -19,6 +19,10 @@ public final class R {
     public static final class attr {
     }
     public static final class dimen {
+        /**  Default screen margins, per the Android Design guidelines. 
+         */
+        public static final int activity_horizontal_margin=0x7f050001;
+        public static final int activity_vertical_margin=0x7f050002;
         /**  the system adds a margin of 8dp from SDK14 onwards 
  custom launchers need to be catered for as per http://stackoverflow.com/a/13952521/383414 
  the system adds a margin of 8dp from SDK14 onwards 
@@ -31,37 +35,57 @@ public final class R {
         public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int ivFlair=0x7f090001;
-        public static final int pref_imageView=0x7f090000;
+        public static final int action_about=0x7f0a0006;
+        public static final int imageView1=0x7f0a0003;
+        public static final int imageView2=0x7f0a0001;
+        public static final int ivFlair=0x7f0a0005;
+        public static final int pref_imageView=0x7f0a0004;
+        public static final int textView1=0x7f0a0000;
+        public static final int textView2=0x7f0a0002;
     }
     public static final class layout {
-        public static final int custom_pref_account_image=0x7f030000;
-        public static final int custom_pref_flair=0x7f030001;
-        public static final int widget=0x7f030002;
+        public static final int activity_about=0x7f030000;
+        public static final int custom_pref_account_image=0x7f030001;
+        public static final int custom_pref_flair=0x7f030002;
+        public static final int widget=0x7f030003;
+    }
+    public static final class menu {
+        public static final int main=0x7f090000;
     }
     public static final class string {
+        public static final int action_about=0x7f060005;
         public static final int app_name=0x7f060000;
         public static final int defaultAccount=0x7f060002;
         public static final int defaultTheme=0x7f060003;
+        /**  DEFAULT SETTINGS 
+         */
         public static final int defaultUser=0x7f060001;
-        public static final int pref_default_user=0x7f060007;
+        public static final int pref_default_user=0x7f06000c;
         /**  DATA & SYNC 
          */
-        public static final int pref_header_data_sync=0x7f06000a;
-        public static final int pref_header_flair=0x7f060005;
+        public static final int pref_header_data_sync=0x7f06000f;
+        public static final int pref_header_flair=0x7f06000a;
         /**  Strings related to Settings 
          */
-        public static final int pref_header_general=0x7f060004;
+        public static final int pref_header_general=0x7f060009;
         /**  ACCOUNT / SITE LIST DROP-DOWN 
          */
-        public static final int pref_title_account=0x7f060008;
-        public static final int pref_title_sync_frequency=0x7f06000b;
+        public static final int pref_title_account=0x7f06000d;
+        public static final int pref_title_sync_frequency=0x7f060010;
         /**  THEME FOR FLAIR 
          */
-        public static final int pref_title_theme=0x7f060009;
+        public static final int pref_title_theme=0x7f06000e;
         /**  USER ID 
          */
-        public static final int pref_title_user=0x7f060006;
+        public static final int pref_title_user=0x7f06000b;
+        public static final int text_about=0x7f060007;
+        public static final int text_developer=0x7f060008;
+        /**  ABOUT ACTIVITY 
+         */
+        public static final int title_about=0x7f060006;
+        /**  SETTINGS ACTIVITY 
+         */
+        public static final int title_settings=0x7f060004;
     }
     public static final class style {
         /** 
