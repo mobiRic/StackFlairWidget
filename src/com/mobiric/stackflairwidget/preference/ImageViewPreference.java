@@ -13,13 +13,15 @@ import android.widget.ImageView.ScaleType;
 import com.mobiric.stackflairwidget.R;
 
 /**
- * Custom {@link Preference} that displays an {@link ImageView}. </p>
- * This class is a bit of a HACK in the way it handles its layout, and could be improved.
+ * Custom {@link Preference} that displays an {@link ImageView}. </p> This class is a bit of a HACK
+ * in the way it handles its layout, and could be improved.
  */
 // TODO make custom Preference properly
 public class ImageViewPreference extends Preference
 {
 	private ImageView imageView;
+	private int height;
+	private int width;
 
 	private Context context;
 	private AttributeSet attrs;
@@ -30,18 +32,17 @@ public class ImageViewPreference extends Preference
 		this.context = context;
 		this.attrs = attrs;
 
-		//		this.setWidgetLayoutResource(R.layout.custom_pref_flair);
-		//		if (mPhoto == null)
-		//		{
-		//			mPhoto = BitmapFactory.decodeResource(getContext().getResources(),
-		//				R.drawable.ic_launcher);
-		//		}
+		// this.setWidgetLayoutResource(R.layout.custom_pref_flair);
+		// if (mPhoto == null)
+		// {
+		// mPhoto = BitmapFactory.decodeResource(getContext().getResources(),
+		// R.drawable.ic_launcher);
+		// }
 	}
 
 	/**
-	 * Returns the view to show. </p>
-	 * This is a HACK that returns a basic {@link ImageView} independent of the
-	 * layout files used elsewhere. This is the only way I could get a custom
+	 * Returns the view to show. </p> This is a HACK that returns a basic {@link ImageView}
+	 * independent of the layout files used elsewhere. This is the only way I could get a custom
 	 * {@link Preference} layout to work.
 	 */
 	@Override
@@ -50,9 +51,9 @@ public class ImageViewPreference extends Preference
 		if (imageView == null)
 		{
 			imageView = new ImageView(context, attrs);
-			imageView.setImageResource(R.drawable.ic_launcher);
-			LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT,
-				LayoutParams.WRAP_CONTENT);
+			imageView.setImageResource(R.drawable.flair_383414);
+			LayoutParams layoutParams =
+					new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			imageView.setLayoutParams(layoutParams);
 			imageView.setScaleType(ScaleType.FIT_CENTER);
 		}
@@ -71,11 +72,21 @@ public class ImageViewPreference extends Preference
 			return;
 		}
 
+		// lazy initialise dimensions
+		if (width == 0)
+		{
+			height = imageView.getHeight();
+			width = imageView.getWidth();
+		}
+
+		// scale bitmap correctly
+		final Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, width, height, true);
+
 		imageView.post(new Runnable()
 		{
 			public void run()
 			{
-				imageView.setImageBitmap(bitmap);
+				imageView.setImageBitmap(bitmapResized);
 				imageView.invalidate();
 			}
 		});
