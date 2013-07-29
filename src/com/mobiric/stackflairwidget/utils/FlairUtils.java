@@ -47,7 +47,9 @@ public class FlairUtils
 	public static void startImageDownload(String url, int appWidgetId, Handler webserviceHandler,
 			Context context)
 	{
-		// create Intent to send the LOGIN command
+		Dbug.log("Widget [" + appWidgetId + "] fetching [" + url + "]");
+
+		// create Intent to download the image
 		Intent intent = new Intent(context, WebService.class);
 		intent.setAction(IntentAction.WebService.IMAGE_DOWNLOAD);
 

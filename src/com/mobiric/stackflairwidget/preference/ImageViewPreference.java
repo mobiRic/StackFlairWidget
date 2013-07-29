@@ -10,6 +10,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
+import com.mobiric.debug.Dbug;
 import com.mobiric.stackflairwidget.R;
 
 /**
@@ -23,6 +24,8 @@ public class ImageViewPreference extends Preference
 	private int height;
 	private int width;
 
+	private Bitmap image;
+
 	private Context context;
 	private AttributeSet attrs;
 
@@ -31,13 +34,6 @@ public class ImageViewPreference extends Preference
 		super(context, attrs);
 		this.context = context;
 		this.attrs = attrs;
-
-		// this.setWidgetLayoutResource(R.layout.custom_pref_flair);
-		// if (mPhoto == null)
-		// {
-		// mPhoto = BitmapFactory.decodeResource(getContext().getResources(),
-		// R.drawable.ic_launcher);
-		// }
 	}
 
 	/**
@@ -56,6 +52,17 @@ public class ImageViewPreference extends Preference
 					new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
 			imageView.setLayoutParams(layoutParams);
 			imageView.setScaleType(ScaleType.FIT_CENTER);
+
+			if (image != null)
+			{
+				imageView.post(new Runnable()
+				{
+					public void run()
+					{
+						setImageToView(image);
+					}
+				});
+			}
 		}
 
 		return imageView;
@@ -64,7 +71,7 @@ public class ImageViewPreference extends Preference
 	/**
 	 * Sets a new image to display.
 	 */
-	public void setBitmap(final Bitmap bitmap)
+	public void setBitmap(Bitmap bitmap)
 	{
 		// null check
 		if (bitmap == null)
@@ -72,23 +79,57 @@ public class ImageViewPreference extends Preference
 			return;
 		}
 
+		/*
+		 * There is a race condition here between setting the bitmap, and the image view being
+		 * created. Save a copy of the bitmap here, and set it when the image view is created.
+		 */
+		image = bitmap;
+		if (imageView != null)
+		{
+			setImageToView(image);
+		}
+	}
+
+	/**
+	 * Helper method to set the image to the view. Handles resizing of bitmap if required.
+	 * 
+	 * @param newBitmap
+	 *            new image to set
+	 */
+	private void setImageToView(final Bitmap newBitmap)
+	{
 		// lazy initialise dimensions
-		if (width == 0)
+		if ((height == 0) || (width == 0))
 		{
 			height = imageView.getHeight();
 			width = imageView.getWidth();
 		}
 
 		// scale bitmap correctly
-		final Bitmap bitmapResized = Bitmap.createScaledBitmap(bitmap, width, height, true);
-
-		imageView.post(new Runnable()
+		if ((newBitmap.getHeight() != height) || (newBitmap.getWidth() != width))
 		{
-			public void run()
+			// resize & set bitmap
+			final Bitmap bitmapResized = Bitmap.createScaledBitmap(newBitmap, width, height, true);
+			imageView.post(new Runnable()
 			{
-				imageView.setImageBitmap(bitmapResized);
-				imageView.invalidate();
-			}
-		});
+				public void run()
+				{
+					imageView.setImageBitmap(bitmapResized);
+					imageView.invalidate();
+				}
+			});
+		}
+		else
+		{
+			// set unsized bitmap
+			imageView.post(new Runnable()
+			{
+				public void run()
+				{
+					imageView.setImageBitmap(newBitmap);
+					imageView.invalidate();
+				}
+			});
+		}
 	}
 }

@@ -52,6 +52,8 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 	private ListPreference prefTheme;
 	private ImageViewPreference prefFlairImage;
 
+	Bitmap cachedFlair;
+
 	private int appWidgetId;
 	private volatile boolean initialised = false;
 
@@ -70,20 +72,8 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		PreferenceManager prefMgr = getPreferenceManager();
 		prefMgr.setSharedPreferencesName(String.valueOf(appWidgetId));
 		prefMgr.setSharedPreferencesMode(MODE_PRIVATE);
-	}
 
-	// /**
-	// * Any way this activity is placed into background, it will configure the widget.
-	// */
-	// @Override
-	// protected void onPause()
-	// {
-	// setResult(RESULT_OK,
-	// new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId));
-	// finish();
-	//
-	// super.onPause();
-	// }
+	}
 
 	/**
 	 * Used to hack the built in screen layout with the image.
@@ -96,7 +86,10 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		setupSimplePreferencesScreen();
 
 		// retrieve cached image after activity has started
-		final Bitmap cachedFlair = FlairUtils.loadCachedImage(this, appWidgetId);
+		if (cachedFlair == null)
+		{
+			cachedFlair = FlairUtils.loadCachedImage(this, appWidgetId);
+		}
 		findViewById(android.R.id.content).post(new Runnable()
 		{
 			public void run()
@@ -111,8 +104,30 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 				bindPreferenceSummaryToValue(findPreference("user"));
 				bindPreferenceSummaryToValue(findPreference("account"));
 				bindPreferenceSummaryToValue(findPreference("theme"));
+
+				initialised = true;
 			}
 		});
+	}
+
+	/**
+	 * Saves the cached flair bitmap on rotation.
+	 */
+	@Override
+	protected void onSaveInstanceState(Bundle outState)
+	{
+		super.onSaveInstanceState(outState);
+		outState.putParcelable("NON", cachedFlair);
+	}
+
+	/**
+	 * Restores the cached flair bitmap on rotation.
+	 */
+	@Override
+	protected void onRestoreInstanceState(Bundle state)
+	{
+		super.onRestoreInstanceState(state);
+		cachedFlair = state.getParcelable("NON");
 	}
 
 	/**
@@ -137,9 +152,6 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		getPreferenceScreen().addPreference(fakeHeader);
 		addPreferencesFromResource(R.xml.pref_flair_image);
 		prefFlairImage = (ImageViewPreference) findPreference("flair");
-
-		initialised = true;
-
 	}
 
 	@Override
@@ -295,6 +307,7 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 			{
 				// download success - update image
 				Bitmap bmpFlair = (Bitmap) message.obj;
+				cachedFlair = bmpFlair;
 				prefFlairImage.setBitmap(bmpFlair);
 
 				// TODO abstract widget update to be triggered by an Intent
