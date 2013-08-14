@@ -6,11 +6,11 @@ import android.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
+import android.widget.AbsListView;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import com.mobiric.debug.Dbug;
 import com.mobiric.stackflairwidget.R;
 
 /**
@@ -48,8 +48,12 @@ public class ImageViewPreference extends Preference
 		{
 			imageView = new ImageView(context, attrs);
 			imageView.setImageResource(R.drawable.flair_383414);
-			LayoutParams layoutParams =
-					new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+
+			// LayoutParams must match the parent view
+			AbsListView.LayoutParams layoutParams =
+					new AbsListView.LayoutParams(LayoutParams.WRAP_CONTENT,
+							LayoutParams.WRAP_CONTENT);
+
 			imageView.setLayoutParams(layoutParams);
 			imageView.setScaleType(ScaleType.FIT_CENTER);
 
