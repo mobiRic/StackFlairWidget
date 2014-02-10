@@ -1,5 +1,6 @@
 package com.mobiric.stackflairwidget.utils;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,10 +69,36 @@ public class FlairUtils
 	}
 
 	/**
+	 * Gives the name of the cache file used for this widget's image.
+	 * 
+	 * @param appWidgetId
+	 *            ID of the widget
+	 * @return Full filename including extension
+	 */
+	private static String getFilename(int appWidgetId)
+	{
+		return appWidgetId + ".png";
+	}
+
+	/**
+	 * Creates a {@link File} reference to the widget's image cache.
+	 * 
+	 * @param context
+	 *            Context to access image file with
+	 * @param appWidgetId
+	 *            ID of the widget
+	 * @return {@link File} used for the widget's image cache
+	 */
+	public static File getCacheFile(Context context, int appWidgetId)
+	{
+		return new File(context.getApplicationContext().getFilesDir(), getFilename(appWidgetId));
+	}
+
+	/**
 	 * Saves the image a given widget in the file cache.
 	 * 
 	 * @param context
-	 *            Context to save image file with
+	 *            Context to access image file with
 	 * @param appWidgetId
 	 *            ID of the widget
 	 * @param flair
@@ -83,7 +110,7 @@ public class FlairUtils
 		try
 		{
 			FileOutputStream fos =
-					context.getApplicationContext().openFileOutput(appWidgetId + ".png",
+					context.getApplicationContext().openFileOutput(getFilename(appWidgetId),
 							Context.MODE_PRIVATE);
 			flair.compress(CompressFormat.PNG, 100, fos);
 			fos.close();
@@ -100,10 +127,10 @@ public class FlairUtils
 	}
 
 	/**
-	 * Loads the image a given widget from the file cache.
+	 * Loads the image for a given widget from the file cache.
 	 * 
 	 * @param context
-	 *            Context to save image file with
+	 *            Context to access image file with
 	 * @param appWidgetId
 	 *            ID of the widget
 	 * @return image from cache, or <code>null</code> image could not be found or read
@@ -114,7 +141,7 @@ public class FlairUtils
 		try
 		{
 			FileInputStream fis =
-					context.getApplicationContext().openFileInput(appWidgetId + ".png");
+					context.getApplicationContext().openFileInput(getFilename(appWidgetId));
 			flair = BitmapFactory.decodeStream(fis);
 			fis.close();
 		}
@@ -125,5 +152,20 @@ public class FlairUtils
 		}
 
 		return flair;
+	}
+
+	/**
+	 * Returns the time when this image cache was last modified.
+	 * 
+	 * @param context
+	 *            Context to access image file with
+	 * @param appWidgetId
+	 *            ID of the widget
+	 * @return time when the cache was last modified, measured in milliseconds since January 1st,
+	 *         1970, midnight (0 if the file does not exist)
+	 */
+	public static long getLastCachedTime(Context context, int appWidgetId)
+	{
+		return getCacheFile(context, appWidgetId).lastModified();
 	}
 }

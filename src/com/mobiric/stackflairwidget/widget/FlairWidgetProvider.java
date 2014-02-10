@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 
 import com.mobiric.stackflairwidget.constant.IntentExtra;
 import com.mobiric.stackflairwidget.service.FlairWidgetService;
+import com.mobiric.stackflairwidget.utils.FlairUtils;
 
 /**
  * A very basic {@link AppWidgetProvider} implementation that delegates the actual processing to the
@@ -51,9 +52,9 @@ public class FlairWidgetProvider extends AppWidgetProvider
 					new File(context.getApplicationContext().getFilesDir().getParent()
 							+ "/shared_prefs/" + i + ".xml");
 			prefsFile.delete();
-			
+
 			// delete cached flair image
-			File flairFile = new File(context.getApplicationContext().getFilesDir(), i + ".png");
+			File flairFile = FlairUtils.getCacheFile(context, i);
 			flairFile.delete();
 		}
 

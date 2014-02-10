@@ -1,5 +1,7 @@
 package com.mobiric.stackflairwidget.activity;
 
+import java.util.Date;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -20,6 +22,14 @@ import com.mobiric.stackflairwidget.utils.FlairUtils;
 
 public class AboutActivity extends Activity implements Handler.Callback
 {
+	private static final long A_DAY_IN_MILLIS = 24 * 60 * 60 * 1000;
+	private static final long CACHE_REFRESH_TIMEOUT = 14 * A_DAY_IN_MILLIS;
+
+	/**
+	 * ID used for the flair image on this {@link Activity}.
+	 */
+	private static final int ABOUT_FLAIR_ID = 0;
+
 	/**
 	 * Handler for the result to come back to this service. The {@link WebService} and this
 	 * {@link StaticSafeHandler} both need to know the exact parameters passed back in the
@@ -39,9 +49,8 @@ public class AboutActivity extends Activity implements Handler.Callback
 
 		webserviceHandler = new StaticSafeHandler(this);
 
-		// TODO add a time parameter to loadCachedImage to minimise downloads
 		// set cached image before downloading a new one
-		final Bitmap cachedFlair = FlairUtils.loadCachedImage(this, 0);
+		final Bitmap cachedFlair = FlairUtils.loadCachedImage(this, ABOUT_FLAIR_ID);
 		ivDevProfile = (ImageView) findViewById(R.id.imageView2);
 		ivDevProfile.post(new Runnable()
 		{
@@ -56,10 +65,17 @@ public class AboutActivity extends Activity implements Handler.Callback
 					ivDevProfile.setImageBitmap(cachedFlair);
 				}
 
-				// get new image
-				// FlairUtils.startImageDownload(FlairUtils.getFlairDownloadUrl(
-				// getString(R.string.defaultAccount), getString(R.string.defaultUser),
-				// getString(R.string.defaultTheme)), 0, webserviceHandler, AboutActivity.this);
+				// refresh image
+				long now = new Date().getTime();
+				long lastUpdated =
+						FlairUtils.getLastCachedTime(getApplicationContext(), ABOUT_FLAIR_ID);
+				if (CACHE_REFRESH_TIMEOUT < (now - lastUpdated))
+				{
+					FlairUtils.startImageDownload(FlairUtils.getFlairDownloadUrl(
+							getString(R.string.defaultAccount), getString(R.string.defaultUser),
+							getString(R.string.defaultTheme)), 0, webserviceHandler,
+							AboutActivity.this);
+				}
 			}
 		});
 	}
