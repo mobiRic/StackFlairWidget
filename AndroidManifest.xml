@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.mobiric.stackflairwidget"
+    package="mobiric.flairstack"
     android:versionCode="1"
-    android:versionName="1.1.0" >
+    android:versionName="1.2" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -38,14 +38,14 @@
         </activity>
 
         <!-- SERVICES -->
-        <service android:name="com.mobiric.stackflairwidget.service.FlairWidgetService" />
-        <service android:name="com.mobiric.stackflairwidget.service.WebService" />
+        <service android:name=".service.FlairWidgetService" />
+        <service android:name=".service.WebService" />
 
         <!-- BROADCAST RECEIVERS -->
 
 
         <!-- WIDGET -->
-        <receiver android:name="com.mobiric.stackflairwidget.widget.FlairWidgetProvider" >
+        <receiver android:name=".widget.FlairWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

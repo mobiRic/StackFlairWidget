@@ -1,4 +1,4 @@
-package com.mobiric.stackflairwidget.constant;
+package mobiric.flairstack.constant;
 
 import android.content.SharedPreferences;
 

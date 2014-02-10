@@ -1,4 +1,4 @@
-package com.mobiric.lib.widget;
+package lib.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

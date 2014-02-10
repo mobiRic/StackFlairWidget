@@ -1,9 +1,14 @@
-package com.mobiric.stackflairwidget.utils;
+package mobiric.flairstack.utils;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import lib.debug.Dbug;
+import mobiric.flairstack.constant.IntentAction;
+import mobiric.flairstack.constant.IntentExtra;
+import mobiric.flairstack.service.WebService;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,10 +18,6 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.Handler;
 import android.os.Messenger;
 
-import com.mobiric.debug.Dbug;
-import com.mobiric.stackflairwidget.constant.IntentAction;
-import com.mobiric.stackflairwidget.constant.IntentExtra;
-import com.mobiric.stackflairwidget.service.WebService;
 
 /**
  * Utility class for StackFlair specific functions.

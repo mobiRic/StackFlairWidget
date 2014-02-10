@@ -1,6 +1,10 @@
-package com.mobiric.stackflairwidget.widget;
+package mobiric.flairstack.widget;
 
 import java.io.File;
+
+import mobiric.flairstack.constant.IntentExtra;
+import mobiric.flairstack.service.FlairWidgetService;
+import mobiric.flairstack.utils.FlairUtils;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -8,9 +12,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.mobiric.stackflairwidget.constant.IntentExtra;
-import com.mobiric.stackflairwidget.service.FlairWidgetService;
-import com.mobiric.stackflairwidget.utils.FlairUtils;
 
 /**
  * A very basic {@link AppWidgetProvider} implementation that delegates the actual processing to the

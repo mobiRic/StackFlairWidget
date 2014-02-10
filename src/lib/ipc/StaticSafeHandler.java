@@ -1,4 +1,4 @@
-package com.mobiric.lib.ipc;
+package lib.ipc;
 
 import java.lang.ref.WeakReference;
 

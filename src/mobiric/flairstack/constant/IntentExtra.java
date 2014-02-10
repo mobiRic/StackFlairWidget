@@ -1,11 +1,11 @@
-package com.mobiric.stackflairwidget.constant;
+package mobiric.flairstack.constant;
 
+import mobiric.flairstack.service.FlairWidgetService;
+import mobiric.flairstack.service.WebService;
+import mobiric.flairstack.widget.FlairWidgetProvider;
 import android.os.Bundle;
 import android.os.Messenger;
 
-import com.mobiric.stackflairwidget.service.FlairWidgetService;
-import com.mobiric.stackflairwidget.service.WebService;
-import com.mobiric.stackflairwidget.widget.FlairWidgetProvider;
 
 /**
  * Contains definitions of broadcast intent extras for this app.

@@ -1,4 +1,4 @@
-package com.mobiric.lib.utils;
+package lib.utils;
 
 
 /**

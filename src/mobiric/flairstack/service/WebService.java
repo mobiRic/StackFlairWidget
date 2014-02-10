@@ -1,7 +1,12 @@
-package com.mobiric.stackflairwidget.service;
+package mobiric.flairstack.service;
 
 import java.io.IOException;
 import java.io.InputStream;
+
+import lib.debug.Dbug;
+import mobiric.flairstack.constant.IntentAction;
+import mobiric.flairstack.constant.IntentExtra;
+import mobiric.flairstack.constant.WSConstants;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -20,10 +25,6 @@ import android.os.Message;
 import android.os.Messenger;
 import android.os.PowerManager;
 
-import com.mobiric.debug.Dbug;
-import com.mobiric.stackflairwidget.constant.IntentAction;
-import com.mobiric.stackflairwidget.constant.IntentExtra;
-import com.mobiric.stackflairwidget.constant.WSConstants;
 
 public class WebService extends IntentService
 {

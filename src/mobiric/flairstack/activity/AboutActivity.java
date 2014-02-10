@@ -1,4 +1,4 @@
-package com.mobiric.stackflairwidget.activity;
+package mobiric.flairstack.activity;
 
 import java.util.Date;
 
@@ -12,13 +12,14 @@ import android.os.Message;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.mobiric.debug.Dbug;
-import com.mobiric.lib.ipc.StaticSafeHandler;
-import com.mobiric.stackflairwidget.R;
-import com.mobiric.stackflairwidget.constant.IntentAction;
-import com.mobiric.stackflairwidget.constant.WSConstants;
-import com.mobiric.stackflairwidget.service.WebService;
-import com.mobiric.stackflairwidget.utils.FlairUtils;
+
+import lib.debug.Dbug;
+import lib.ipc.StaticSafeHandler;
+import mobiric.flairstack.R;
+import mobiric.flairstack.constant.IntentAction;
+import mobiric.flairstack.constant.WSConstants;
+import mobiric.flairstack.service.WebService;
+import mobiric.flairstack.utils.FlairUtils;
 
 public class AboutActivity extends Activity implements Handler.Callback
 {

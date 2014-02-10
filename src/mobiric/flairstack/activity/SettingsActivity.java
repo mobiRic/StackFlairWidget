@@ -1,5 +1,5 @@
 // TODO This whole activity needs to be redone as a nice custom view
-package com.mobiric.stackflairwidget.activity;
+package mobiric.flairstack.activity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -15,16 +15,17 @@ import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.mobiric.debug.Dbug;
-import com.mobiric.lib.ipc.StaticSafeHandler;
-import com.mobiric.stackflairwidget.R;
-import com.mobiric.stackflairwidget.constant.IntentAction;
-import com.mobiric.stackflairwidget.constant.IntentExtra;
-import com.mobiric.stackflairwidget.constant.WSConstants;
-import com.mobiric.stackflairwidget.preference.ImageViewPreference;
-import com.mobiric.stackflairwidget.service.FlairWidgetService;
-import com.mobiric.stackflairwidget.service.WebService;
-import com.mobiric.stackflairwidget.utils.FlairUtils;
+
+import lib.debug.Dbug;
+import lib.ipc.StaticSafeHandler;
+import mobiric.flairstack.R;
+import mobiric.flairstack.constant.IntentAction;
+import mobiric.flairstack.constant.IntentExtra;
+import mobiric.flairstack.constant.WSConstants;
+import mobiric.flairstack.preference.ImageViewPreference;
+import mobiric.flairstack.service.FlairWidgetService;
+import mobiric.flairstack.service.WebService;
+import mobiric.flairstack.utils.FlairUtils;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On handset devices,

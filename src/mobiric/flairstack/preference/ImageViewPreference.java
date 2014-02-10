@@ -1,4 +1,4 @@
-package com.mobiric.stackflairwidget.preference;
+package mobiric.flairstack.preference;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,7 +11,7 @@ import android.widget.AbsListView.LayoutParams;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import com.mobiric.stackflairwidget.R;
+import mobiric.flairstack.R;
 
 /**
  * Custom {@link Preference} that displays an {@link ImageView}. </p> This class is a bit of a HACK

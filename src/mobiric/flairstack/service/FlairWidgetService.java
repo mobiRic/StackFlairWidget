@@ -1,4 +1,4 @@
-package com.mobiric.stackflairwidget.service;
+package mobiric.flairstack.service;
 
 import android.app.PendingIntent;
 import android.app.Service;
@@ -12,15 +12,16 @@ import android.os.IBinder;
 import android.os.Message;
 import android.widget.RemoteViews;
 
-import com.mobiric.debug.Dbug;
-import com.mobiric.lib.ipc.StaticSafeHandler;
-import com.mobiric.stackflairwidget.R;
-import com.mobiric.stackflairwidget.activity.SettingsActivity;
-import com.mobiric.stackflairwidget.constant.FlairSettings;
-import com.mobiric.stackflairwidget.constant.IntentAction;
-import com.mobiric.stackflairwidget.constant.IntentExtra;
-import com.mobiric.stackflairwidget.constant.WSConstants;
-import com.mobiric.stackflairwidget.utils.FlairUtils;
+
+import lib.debug.Dbug;
+import lib.ipc.StaticSafeHandler;
+import mobiric.flairstack.R;
+import mobiric.flairstack.activity.SettingsActivity;
+import mobiric.flairstack.constant.FlairSettings;
+import mobiric.flairstack.constant.IntentAction;
+import mobiric.flairstack.constant.IntentExtra;
+import mobiric.flairstack.constant.WSConstants;
+import mobiric.flairstack.utils.FlairUtils;
 
 /**
  * Service that provides background processing in order to update the info on the widget.
