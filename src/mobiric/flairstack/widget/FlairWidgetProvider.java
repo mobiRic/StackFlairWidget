@@ -15,7 +15,7 @@ import android.content.SharedPreferences;
 
 /**
  * A very basic {@link AppWidgetProvider} implementation that delegates the actual processing to the
- * {@link WifiWidgetService}.
+ * {@link FlairWidgetService}.
  */
 public class FlairWidgetProvider extends AppWidgetProvider
 {
@@ -38,7 +38,7 @@ public class FlairWidgetProvider extends AppWidgetProvider
 	}
 
 	/**
-	 * Deletes the {@link SharedPreferences} file for the deleted widget.
+	 * Deletes the {@link SharedPreferences} file & cached image for the deleted widget.
 	 */
 	@Override
 	public void onDeleted(Context context, int[] appWidgetIds)
