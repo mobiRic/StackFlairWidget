@@ -21,20 +21,23 @@
         android:theme="@style/AppTheme" >
 
         <!-- ACTIVITIES -->
-        <activity
-            android:name=".activity.AboutActivity"
-            android:noHistory="true" >
+        <activity android:name=".activity.AboutActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- WIDGET CONFIG ACTIVITY - REQUIRES FULLY QUALIFIED NAMESPACE PACKAGE -->
         <activity
-            android:name=".activity.SettingsActivity"
+            android:name="mobiric.flairstack.activity.SettingsActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_settings"
             android:noHistory="true" >
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
         </activity>
 
         <!-- SERVICES -->

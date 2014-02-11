@@ -11,7 +11,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
-        android:contentDescription="StackFlair Image"
+        android:contentDescription="Flair Stack logo"
         android:padding="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/ic_launcher"

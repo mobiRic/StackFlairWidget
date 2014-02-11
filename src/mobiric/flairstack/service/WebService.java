@@ -15,6 +15,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 
 import android.app.IntentService;
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -243,8 +244,8 @@ public class WebService extends IntentService
 		msg.what = intent.getAction().hashCode();
 		msg.arg1 = result;
 		msg.arg2 =
-				intent.getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
-						IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
+				intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+						AppWidgetManager.INVALID_APPWIDGET_ID);
 		msg.obj = flair;
 
 		try

@@ -3,6 +3,7 @@ package mobiric.flairstack.constant;
 import mobiric.flairstack.service.FlairWidgetService;
 import mobiric.flairstack.service.WebService;
 import mobiric.flairstack.widget.FlairWidgetProvider;
+import android.appwidget.AppWidgetManager;
 import android.os.Bundle;
 import android.os.Messenger;
 
@@ -19,10 +20,12 @@ public class IntentExtra
 	public static class Key
 	{
 		/**
-		 * Used to send the widget ID from {@link FlairWidgetProvider} to {@link FlairWidgetService}
-		 * .
+		 * Do not use this to pass a widget ID. There is a predefined value in the SDK to use.
+		 * 
+		 * @deprecated use {@link AppWidgetManager#EXTRA_APPWIDGET_ID} instead
 		 */
-		public static final String APP_WIDGET_ID = "APP_WIDGET_ID";
+		@SuppressWarnings("unused")
+		private static final String APP_WIDGET_ID = "APP_WIDGET_ID";
 		/**
 		 * Used to send an image to {@link FlairWidgetService}.
 		 */
@@ -42,11 +45,13 @@ public class IntentExtra
 	public static class Value
 	{
 		/**
-		 * Used with {@link Key#APP_WIDGET_ID} when no widget has been selected.
+		 * Do not use this to identify that no widget ID is passed. There is a predefined value in
+		 * the SDK to use.
 		 * 
+		 * @deprecated use {@link AppWidgetManager#INVALID_APPWIDGET_ID} instead
 		 */
-		public static final int APP_WIDGET_NONE_SELECTED = 0;
-		// public static final String EVENT_LOW_BATTERY = "LowInternalBattery";
+		@SuppressWarnings("unused")
+		private static final int APP_WIDGET_NONE_SELECTED = AppWidgetManager.INVALID_APPWIDGET_ID;
 	}
 
 }

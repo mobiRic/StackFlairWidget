@@ -1,5 +1,14 @@
 package mobiric.flairstack.service;
 
+import lib.debug.Dbug;
+import lib.ipc.StaticSafeHandler;
+import mobiric.flairstack.R;
+import mobiric.flairstack.activity.SettingsActivity;
+import mobiric.flairstack.constant.FlairSettings;
+import mobiric.flairstack.constant.IntentAction;
+import mobiric.flairstack.constant.IntentExtra;
+import mobiric.flairstack.constant.WSConstants;
+import mobiric.flairstack.utils.FlairUtils;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.appwidget.AppWidgetManager;
@@ -11,17 +20,6 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
 import android.widget.RemoteViews;
-
-
-import lib.debug.Dbug;
-import lib.ipc.StaticSafeHandler;
-import mobiric.flairstack.R;
-import mobiric.flairstack.activity.SettingsActivity;
-import mobiric.flairstack.constant.FlairSettings;
-import mobiric.flairstack.constant.IntentAction;
-import mobiric.flairstack.constant.IntentExtra;
-import mobiric.flairstack.constant.WSConstants;
-import mobiric.flairstack.utils.FlairUtils;
 
 /**
  * Service that provides background processing in order to update the info on the widget.
@@ -50,10 +48,10 @@ public class FlairWidgetService extends Service implements Handler.Callback
 	{
 		// get widget ID
 		int appWidgetId =
-				intent.getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
-						IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
+				intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+						AppWidgetManager.INVALID_APPWIDGET_ID);
 
-		if (appWidgetId != IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
+		if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID)
 		{
 			// get widget image
 			// TODO rather pass image as a file per http://stackoverflow.com/a/4352194/383414
@@ -70,6 +68,11 @@ public class FlairWidgetService extends Service implements Handler.Callback
 			{
 				// check for cached image
 				Bitmap cachedFlair = FlairUtils.loadCachedImage(this, appWidgetId);
+
+				if (cachedFlair == null)
+				{
+					Dbug.log("No cached image for widget " + appWidgetId);
+				}
 
 				// initialise the widget with a click event and cached image
 				updateWidget(appWidgetId, cachedFlair);
@@ -130,7 +133,7 @@ public class FlairWidgetService extends Service implements Handler.Callback
 			if (message.arg1 == WSConstants.Result.OK)
 			{
 				// download success - update image
-				if (message.arg2 != IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
+				if (message.arg2 != AppWidgetManager.INVALID_APPWIDGET_ID)
 				{
 					Bitmap bmpFlair = (Bitmap) message.obj;
 					FlairUtils.saveCachedImage(this, message.arg2, bmpFlair);
@@ -193,7 +196,7 @@ public class FlairWidgetService extends Service implements Handler.Callback
 		public void run()
 		{
 			// check for ID
-			if (appWidgetId == IntentExtra.Value.APP_WIDGET_NONE_SELECTED)
+			if (AppWidgetManager.INVALID_APPWIDGET_ID == appWidgetId)
 			{
 				return;
 			}
@@ -248,7 +251,7 @@ public class FlairWidgetService extends Service implements Handler.Callback
 
 			// open Settings on click
 			Intent flairSettings = new Intent(this, SettingsActivity.class);
-			flairSettings.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
+			flairSettings.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 			PendingIntent pendingIntentIp =
 					PendingIntent.getActivity(this, appWidgetId, flairSettings,
 							PendingIntent.FLAG_UPDATE_CURRENT);

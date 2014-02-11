@@ -8,7 +8,7 @@
     <string name="defaultTheme"></string>
 
     <!-- SETTINGS ACTIVITY -->
-    <string name="title_settings">Configure Flair</string>
+    <string name="title_settings">Flair Stack settings</string>
     <string name="action_about">About</string>
 
     <!-- ABOUT ACTIVITY -->

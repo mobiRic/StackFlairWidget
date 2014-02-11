@@ -1,6 +1,18 @@
 // TODO This whole activity needs to be redone as a nice custom view
 package mobiric.flairstack.activity;
 
+import lib.debug.Dbug;
+import lib.ipc.StaticSafeHandler;
+import mobiric.flairstack.R;
+import mobiric.flairstack.constant.IntentAction;
+import mobiric.flairstack.constant.IntentExtra;
+import mobiric.flairstack.constant.WSConstants;
+import mobiric.flairstack.preference.ImageViewPreference;
+import mobiric.flairstack.service.FlairWidgetService;
+import mobiric.flairstack.service.WebService;
+import mobiric.flairstack.utils.FlairUtils;
+import android.app.Activity;
+import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -12,20 +24,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceManager;
-import android.view.Menu;
-import android.view.MenuItem;
-
-
-import lib.debug.Dbug;
-import lib.ipc.StaticSafeHandler;
-import mobiric.flairstack.R;
-import mobiric.flairstack.constant.IntentAction;
-import mobiric.flairstack.constant.IntentExtra;
-import mobiric.flairstack.constant.WSConstants;
-import mobiric.flairstack.preference.ImageViewPreference;
-import mobiric.flairstack.service.FlairWidgetService;
-import mobiric.flairstack.service.WebService;
-import mobiric.flairstack.utils.FlairUtils;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On handset devices,
@@ -58,7 +56,12 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 	private int appWidgetId;
 	private volatile boolean initialised = false;
 
-	@SuppressWarnings("deprecation")
+	/**
+	 * Result of this {@link SettingsActivity}. This is required for this activity to be used in the
+	 * configuration of a new widget. This intent is initialised with {@link Activity#RESULT_OK}.
+	 */
+	private Intent resultValue;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -66,14 +69,25 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 
 		webserviceHandler = new StaticSafeHandler(this);
 		appWidgetId =
-				getIntent().getIntExtra(IntentExtra.Key.APP_WIDGET_ID,
-						IntentExtra.Value.APP_WIDGET_NONE_SELECTED);
+				getIntent().getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,
+						AppWidgetManager.INVALID_APPWIDGET_ID);
+
+		// initialise result as ok
+		resultValue = new Intent();
+		resultValue.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+		setResult(RESULT_OK, resultValue);
+
+		// fail if no widget id
+		if (AppWidgetManager.INVALID_APPWIDGET_ID == appWidgetId)
+		{
+			setResult(RESULT_CANCELED, resultValue);
+			finish();
+		}
 
 		// hack the default shared preferences file to use the one for this widget
 		PreferenceManager prefMgr = getPreferenceManager();
 		prefMgr.setSharedPreferencesName(String.valueOf(appWidgetId));
 		prefMgr.setSharedPreferencesMode(MODE_PRIVATE);
-
 	}
 
 	/**
@@ -131,11 +145,18 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		cachedFlair = state.getParcelable("NON");
 	}
 
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+
+		updateWidget(appWidgetId, null);
+	}
+
 	/**
 	 * Shows the simplified settings UI if the device configuration if the device configuration
 	 * dictates that a simplified, single-pane UI should be shown.
 	 */
-	@SuppressWarnings("deprecation")
 	private void setupSimplePreferencesScreen()
 	{
 		// In the simplified UI, fragments are not used at all and we instead
@@ -153,28 +174,6 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 		getPreferenceScreen().addPreference(fakeHeader);
 		addPreferencesFromResource(R.xml.pref_flair_image);
 		prefFlairImage = (ImageViewPreference) findPreference("flair");
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (R.id.action_about == item.getItemId())
-		{
-			Intent launchAboutActivity = new Intent(getApplicationContext(), AboutActivity.class);
-			startActivity(launchAboutActivity);
-
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
 	}
 
 	/**
@@ -253,7 +252,7 @@ public class SettingsActivity extends PreferenceActivity implements Handler.Call
 	private void updateWidget(int appWidgetId, Bitmap bmpFlair)
 	{
 		Intent serviceIntent = new Intent(this, FlairWidgetService.class);
-		serviceIntent.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
+		serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 		if (bmpFlair != null)
 		{
 			serviceIntent.putExtra(IntentExtra.Key.FLAIR_IMAGE, bmpFlair);

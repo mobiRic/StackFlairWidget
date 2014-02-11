@@ -2,10 +2,8 @@ package mobiric.flairstack.widget;
 
 import java.io.File;
 
-import mobiric.flairstack.constant.IntentExtra;
 import mobiric.flairstack.service.FlairWidgetService;
 import mobiric.flairstack.utils.FlairUtils;
-
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -102,7 +100,7 @@ public class FlairWidgetProvider extends AppWidgetProvider
 	{
 		Intent widgetService =
 				new Intent(context.getApplicationContext(), FlairWidgetService.class);
-		widgetService.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
+		widgetService.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 		return widgetService;
 	}
 

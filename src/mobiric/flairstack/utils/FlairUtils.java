@@ -9,12 +9,12 @@ import lib.debug.Dbug;
 import mobiric.flairstack.constant.IntentAction;
 import mobiric.flairstack.constant.IntentExtra;
 import mobiric.flairstack.service.WebService;
-
+import android.appwidget.AppWidgetManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Messenger;
 
@@ -63,7 +63,7 @@ public class FlairUtils
 		intent.putExtra(IntentExtra.Key.WS_IMAGE_URL, url);
 
 		// set widget id
-		intent.putExtra(IntentExtra.Key.APP_WIDGET_ID, appWidgetId);
+		intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
 
 		// start the service for this request
 		context.startService(intent);
