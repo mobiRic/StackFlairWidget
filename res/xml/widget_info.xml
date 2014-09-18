@@ -17,7 +17,7 @@
     android:initialLayout="@layout/widget"
     android:minHeight="40dp"
     android:minWidth="180dp"
-    android:previewImage="@drawable/flair_383414"
+    android:previewImage="@drawable/flair_preview"
     android:updatePeriodMillis="3600000" />
 <!-- android:initialKeyguardLayout="@layout/widget" -->
 

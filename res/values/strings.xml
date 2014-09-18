@@ -3,7 +3,8 @@
     <string name="app_name">Flair Stack</string>
 
     <!-- DEFAULT SETTINGS -->
-    <string name="defaultUser">383414</string>
+<!--     383414 -->
+    <string name="defaultUser"></string>
     <string name="defaultAccount">stackoverflow.com</string>
     <string name="defaultTheme"></string>
 
@@ -13,7 +14,7 @@
 
     <!-- ABOUT ACTIVITY -->
     <string name="title_about">Flair Stack</string>
-    <string name="text_about">Flair Stack is a simple widget demo that will display the Stack Exchange flair(tm) for a given user.\n\nStack multiple flairs to display your favourite Stack Exchange users.</string>
+    <string name="text_about">Flair Stack is a simple widget demo that will display the Stack Exchange flair\u2122 for a given user.\n\nStack multiple flairs to display your favourite Stack Exchange users.</string>
     <string name="text_developer">Flair Stack developed by:</string>
 
 </resources>

@@ -47,7 +47,7 @@ public class ImageViewPreference extends Preference
 		if (imageView == null)
 		{
 			imageView = new ImageView(context, attrs);
-			imageView.setImageResource(R.drawable.flair_383414);
+			imageView.setImageResource(R.drawable.flair_default);
 
 			// LayoutParams must match the parent view
 			AbsListView.LayoutParams layoutParams =

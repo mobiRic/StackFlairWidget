@@ -24,7 +24,7 @@
         android:layout_alignLeft="@+id/textView2"
         android:layout_alignParentBottom="true"
         android:onClick="onClickDevProfile"
-        android:src="@drawable/flair_383414" />
+        android:src="@drawable/flair_default" />
 
     <TextView
         android:id="@+id/textView2"
