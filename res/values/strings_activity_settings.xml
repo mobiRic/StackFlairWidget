@@ -8,7 +8,7 @@
     
     <!-- USER ID -->
     <string name="pref_title_user">User ID</string>
-    <string name="pref_default_user">383414</string>
+    <string name="pref_default_user">&lt;Tap to add a User ID&gt;</string>
 
     <!-- ACCOUNT / SITE LIST DROP-DOWN -->
     <string name="pref_title_account">Account / Site</string>

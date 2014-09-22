@@ -13,11 +13,11 @@
 <!-- Based on new formula, the size should be 40dp. -->
 
 <appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
-    android:configure="mobiric.flairstack.activity.SettingsActivity"
+    android:configure="mobiric.demo.flairstackwidget.activity.SettingsActivity"
     android:initialLayout="@layout/widget"
     android:minHeight="40dp"
     android:minWidth="180dp"
-    android:previewImage="@drawable/flair_383414"
+    android:previewImage="@drawable/flair_preview"
     android:updatePeriodMillis="3600000" />
 <!-- android:initialKeyguardLayout="@layout/widget" -->
 

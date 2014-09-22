@@ -1,0 +1,29 @@
+TITLE:
+------
+
+Flair Stack Widget
+
+
+SHORT DESCRIPTION:
+------------------
+
+Demo Android widget showing Stack Exchange profile info.
+
+
+LONG DESCRIPTION:
+-----------------
+
+Flair Stack is a simple widget demo that will display the Stack Exchange flair&#2122; for a given user.
+
+Stack multiple flairs to display your favourite Stack Exchange users.
+
+This is designed as a simple demo app, for tutorial purposes.
+
+Source code is hosted at https://github.com/mobiRic/StackFlairWidget
+
+
+WHAT'S NEW:
+-----------
+
+v 1.3.0
+  - UI updates

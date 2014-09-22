@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- ABOUT BOX -->
+    <string name="action_about">About</string>
+    <string name="about_title">About Flair Stack Widget</string>
+    <string name="about_app">Flair Stack is a simple widget demo that will display the Stack Exchange flair\u2122 for a given user.
+\n\n
+Stack multiple flairs to display your favourite Stack Exchange users.
+\n\n
+Source code is available on GitHub at https://github.com/mobiRic/StackFlairWidget</string>
+    <string name="about_developers">Designed and developed by Glowworm Software</string>
+    <string name="about_glowworm_url">http://www.glowworm.mobi</string>
+    <string name="about_version_format">Version %s \u00A9 2012 Glowworm Software</string>
+
+</resources>

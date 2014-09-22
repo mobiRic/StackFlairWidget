@@ -4,7 +4,7 @@
 
 
     <!-- FLAIR IMAGE -->
-    <mobiric.flairstack.preference.ImageViewPreference
+    <mobiric.demo.flairstackwidget.preference.ImageViewPreference
         android:key="flair"
         android:title=""
         android:widgetLayout="@layout/custom_pref_flair" />

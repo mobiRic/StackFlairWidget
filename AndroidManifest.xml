@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="mobiric.flairstack"
-    android:versionCode="1"
-    android:versionName="1.2" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="mobiric.demo.flairstackwidget"
+    android:versionCode="2"
+    android:versionName="1.3.0" >
 
     <uses-sdk
         android:minSdkVersion="11"
-        android:targetSdkVersion="17" />
+        android:targetSdkVersion="17"
+        tools:ignore="OldTargetApi" />
 
     <!-- PERMISSIONS -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -21,7 +23,7 @@
         android:theme="@style/AppTheme" >
 
         <!-- ACTIVITIES -->
-        <activity android:name=".activity.AboutActivity" >
+        <activity android:name="lib.about.AboutActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -31,7 +33,7 @@
 
         <!-- WIDGET CONFIG ACTIVITY - REQUIRES FULLY QUALIFIED NAMESPACE PACKAGE -->
         <activity
-            android:name="mobiric.flairstack.activity.SettingsActivity"
+            android:name="mobiric.demo.flairstackwidget.activity.SettingsActivity"
             android:excludeFromRecents="true"
             android:label="@string/title_settings"
             android:noHistory="true" >
@@ -41,14 +43,14 @@
         </activity>
 
         <!-- SERVICES -->
-        <service android:name=".service.FlairWidgetService" />
-        <service android:name=".service.WebService" />
+        <service android:name="mobiric.demo.flairstackwidget.service.FlairWidgetService" />
+        <service android:name="mobiric.demo.flairstackwidget.service.WebService" />
 
         <!-- BROADCAST RECEIVERS -->
 
 
         <!-- WIDGET -->
-        <receiver android:name=".widget.FlairWidgetProvider" >
+        <receiver android:name="mobiric.demo.flairstackwidget.widget.FlairWidgetProvider" >
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
