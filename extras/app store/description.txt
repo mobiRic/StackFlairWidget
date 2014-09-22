@@ -25,5 +25,5 @@ Source code is hosted at https://github.com/mobiRic/StackFlairWidget
 WHAT'S NEW:
 -----------
 
-v 1.1.0
+v 1.3.0
   - UI updates
