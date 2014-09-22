@@ -7,6 +7,8 @@ A simple widget that displays the flair image for a StackExchange account. Click
 
 Internal architecture is overly complex for this level of app; StackFlair is a demo for a more complicated app.
 
+A working version of this demo can be downloaded from the Google Play store:
+  - https://play.google.com/store/apps/details?id=mobiric.demo.flairstackwidget
 
 For more info on Flair, follow the link from the StackOverflow user profile page.
   e.g. http://stackoverflow.com/users/383414/richard-le-mesurier/flair
