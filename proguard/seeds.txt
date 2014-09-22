@@ -1,0 +1,117 @@
+android.support.v4.app.BackStackState
+android.support.v4.app.BackStackState: android.os.Parcelable$Creator CREATOR
+android.support.v4.app.Fragment$SavedState
+android.support.v4.app.Fragment$SavedState: android.os.Parcelable$Creator CREATOR
+android.support.v4.app.FragmentManagerState
+android.support.v4.app.FragmentManagerState: android.os.Parcelable$Creator CREATOR
+android.support.v4.app.FragmentState
+android.support.v4.app.FragmentState: android.os.Parcelable$Creator CREATOR
+android.support.v4.app.FragmentTabHost: void setOnTabChangedListener(android.widget.TabHost$OnTabChangeListener)
+android.support.v4.app.FragmentTabHost$SavedState
+android.support.v4.app.FragmentTabHost$SavedState: android.os.Parcelable$Creator CREATOR
+android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status[] values()
+android.support.v4.content.ModernAsyncTask$Status: android.support.v4.content.ModernAsyncTask$Status valueOf(java.lang.String)
+android.support.v4.view.PagerTabStrip: void setTabIndicatorColor(int)
+android.support.v4.view.PagerTabStrip: void setTabIndicatorColorResource(int)
+android.support.v4.view.PagerTabStrip: int getTabIndicatorColor()
+android.support.v4.view.PagerTabStrip: void setTextSpacing(int)
+android.support.v4.view.PagerTabStrip: void setBackgroundDrawable(android.graphics.drawable.Drawable)
+android.support.v4.view.PagerTabStrip: void setBackgroundColor(int)
+android.support.v4.view.PagerTabStrip: void setBackgroundResource(int)
+android.support.v4.view.PagerTabStrip: void setDrawFullUnderline(boolean)
+android.support.v4.view.PagerTabStrip: boolean getDrawFullUnderline()
+android.support.v4.view.PagerTabStrip: int getMinHeight()
+android.support.v4.view.PagerTitleStrip: void setSingleLineAllCaps(android.widget.TextView)
+android.support.v4.view.PagerTitleStrip: void setTextSpacing(int)
+android.support.v4.view.PagerTitleStrip: int getTextSpacing()
+android.support.v4.view.PagerTitleStrip: void setNonPrimaryAlpha(float)
+android.support.v4.view.PagerTitleStrip: void setTextColor(int)
+android.support.v4.view.PagerTitleStrip: void setGravity(int)
+android.support.v4.view.PagerTitleStrip: int getMinHeight()
+android.support.v4.view.ViewPager: void setScrollState(int)
+android.support.v4.view.ViewPager: void setAdapter(android.support.v4.view.PagerAdapter)
+android.support.v4.view.ViewPager: android.support.v4.view.PagerAdapter getAdapter()
+android.support.v4.view.ViewPager: void setOnAdapterChangeListener(android.support.v4.view.ViewPager$OnAdapterChangeListener)
+android.support.v4.view.ViewPager: void setCurrentItem(int)
+android.support.v4.view.ViewPager: int getCurrentItem()
+android.support.v4.view.ViewPager: void setOnPageChangeListener(android.support.v4.view.ViewPager$OnPageChangeListener)
+android.support.v4.view.ViewPager: void setChildrenDrawingOrderEnabledCompat(boolean)
+android.support.v4.view.ViewPager: int getOffscreenPageLimit()
+android.support.v4.view.ViewPager: void setOffscreenPageLimit(int)
+android.support.v4.view.ViewPager: void setPageMargin(int)
+android.support.v4.view.ViewPager: int getPageMargin()
+android.support.v4.view.ViewPager: void setPageMarginDrawable(android.graphics.drawable.Drawable)
+android.support.v4.view.ViewPager: void setPageMarginDrawable(int)
+android.support.v4.view.ViewPager: void setScrollingCacheEnabled(boolean)
+android.support.v4.view.ViewPager$SavedState
+android.support.v4.view.ViewPager$SavedState: android.os.Parcelable$Creator CREATOR
+lib.about.AboutActivity
+lib.about.AboutActivity: AboutActivity()
+lib.about.AboutActivity: void onClickLogoGlowworm(android.view.View)
+lib.about.AboutActivity$DefensiveURLSpan
+mobiric.demo.flairstackwidget.R$array: int pref_account_list_titles
+mobiric.demo.flairstackwidget.R$array: int pref_account_list_values
+mobiric.demo.flairstackwidget.R$array: int pref_sync_frequency_titles
+mobiric.demo.flairstackwidget.R$array: int pref_sync_frequency_values
+mobiric.demo.flairstackwidget.R$array: int pref_theme_list_titles
+mobiric.demo.flairstackwidget.R$array: int pref_theme_list_values
+mobiric.demo.flairstackwidget.R$color: int about_background_overlay
+mobiric.demo.flairstackwidget.R$color: int about_divider
+mobiric.demo.flairstackwidget.R$color: int about_feature_graphic_frame
+mobiric.demo.flairstackwidget.R$color: int gold
+mobiric.demo.flairstackwidget.R$color: int grey_text
+mobiric.demo.flairstackwidget.R$color: int translucent_gold_divider
+mobiric.demo.flairstackwidget.R$color: int white_alpha_aa
+mobiric.demo.flairstackwidget.R$dimen: int activity_horizontal_margin
+mobiric.demo.flairstackwidget.R$dimen: int activity_vertical_margin
+mobiric.demo.flairstackwidget.R$dimen: int widget_margin
+mobiric.demo.flairstackwidget.R$drawable: int app_theme_background
+mobiric.demo.flairstackwidget.R$drawable: int flair_default
+mobiric.demo.flairstackwidget.R$drawable: int flair_preview
+mobiric.demo.flairstackwidget.R$drawable: int ic_about_feature
+mobiric.demo.flairstackwidget.R$drawable: int ic_launcher
+mobiric.demo.flairstackwidget.R$drawable: int ic_logo_glowworm
+mobiric.demo.flairstackwidget.R$id: int ivFlair
+mobiric.demo.flairstackwidget.R$id: int pref_imageView
+mobiric.demo.flairstackwidget.R$id: int tvAboutApp
+mobiric.demo.flairstackwidget.R$id: int tvAboutVersion
+mobiric.demo.flairstackwidget.R$layout: int activity_about
+mobiric.demo.flairstackwidget.R$layout: int custom_pref_account_image
+mobiric.demo.flairstackwidget.R$layout: int custom_pref_flair
+mobiric.demo.flairstackwidget.R$layout: int widget
+mobiric.demo.flairstackwidget.R$string: int about_app
+mobiric.demo.flairstackwidget.R$string: int about_developers
+mobiric.demo.flairstackwidget.R$string: int about_glowworm_url
+mobiric.demo.flairstackwidget.R$string: int about_title
+mobiric.demo.flairstackwidget.R$string: int about_version_format
+mobiric.demo.flairstackwidget.R$string: int action_about
+mobiric.demo.flairstackwidget.R$string: int app_name
+mobiric.demo.flairstackwidget.R$string: int defaultAccount
+mobiric.demo.flairstackwidget.R$string: int defaultTheme
+mobiric.demo.flairstackwidget.R$string: int defaultUser
+mobiric.demo.flairstackwidget.R$string: int pref_default_user
+mobiric.demo.flairstackwidget.R$string: int pref_header_data_sync
+mobiric.demo.flairstackwidget.R$string: int pref_header_flair
+mobiric.demo.flairstackwidget.R$string: int pref_header_general
+mobiric.demo.flairstackwidget.R$string: int pref_title_account
+mobiric.demo.flairstackwidget.R$string: int pref_title_sync_frequency
+mobiric.demo.flairstackwidget.R$string: int pref_title_theme
+mobiric.demo.flairstackwidget.R$string: int pref_title_user
+mobiric.demo.flairstackwidget.R$string: int title_settings
+mobiric.demo.flairstackwidget.R$style: int AppBaseTheme
+mobiric.demo.flairstackwidget.R$style: int AppTheme
+mobiric.demo.flairstackwidget.R$style: int DialogTheme
+mobiric.demo.flairstackwidget.R$xml: int pref_data_sync
+mobiric.demo.flairstackwidget.R$xml: int pref_flair_image
+mobiric.demo.flairstackwidget.R$xml: int pref_general
+mobiric.demo.flairstackwidget.R$xml: int widget_info
+mobiric.demo.flairstackwidget.activity.SettingsActivity
+mobiric.demo.flairstackwidget.activity.SettingsActivity: SettingsActivity()
+mobiric.demo.flairstackwidget.preference.ImageViewPreference
+mobiric.demo.flairstackwidget.preference.ImageViewPreference: ImageViewPreference(android.content.Context,android.util.AttributeSet)
+mobiric.demo.flairstackwidget.service.FlairWidgetService
+mobiric.demo.flairstackwidget.service.FlairWidgetService: FlairWidgetService()
+mobiric.demo.flairstackwidget.service.WebService
+mobiric.demo.flairstackwidget.service.WebService: WebService()
+mobiric.demo.flairstackwidget.widget.FlairWidgetProvider
+mobiric.demo.flairstackwidget.widget.FlairWidgetProvider: FlairWidgetProvider()
